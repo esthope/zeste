@@ -22,9 +22,7 @@ import TextEditor from 'component/TextEditor'
 import ActionContainer from 'component/ActionContainer'
 import AlertMessage from 'component/AlertMessage'
 
-import {activePreviousHistory, undoneContent} from 'util/historyHandler'
-
-
+import {downgradeHistory, undoneContent} from 'util/historyHandler'
 
 const keys = getInteractionsKeys(interactionsData),
       cases = Object.values(Case);
@@ -37,6 +35,7 @@ const Home = ():ReactElement => {
         // refs
         editorRef = useRef<Editor>(null),
         started = useRef<boolean>(false), // [!] adapter avec redux
+        undo = useRef<boolean>(false),
         // memo
         editorValues = useMemo(()=>([editorState, setEditorState, editorRef]), [editorState]),
         messageValues = useMemo(()=>([setAlertMessage, alertMessage]), [alertMessage]),
@@ -79,7 +78,7 @@ const Home = ():ReactElement => {
       {
         // no prevent default is needed for action
         event.preventDefault();
-        newState = await clipboardAction(askedInter, editorRef, dispatch, stateHistory)
+        newState = await clipboardAction(askedInter, editorRef, dispatch)
       }
 
       // getting new state failed
@@ -131,7 +130,13 @@ const Home = ():ReactElement => {
   }, [editorState, key_listener])
 
   useEffect(()=>{
-    console.log(stateHistory)
+    // console.log(undo.current)
+    if (!undo.current) return
+      console.log('3 home')
+      console.log(stateHistory)
+      // const newState = undoneContent(stateHistory)
+      // checkNewState(newState, Action.undo)
+    undo.current = false
   }, [stateHistory])
 
   return (
@@ -161,7 +166,7 @@ const Home = ():ReactElement => {
 
               {/*ACTIONS*/}
               <ErrorBoundary FallbackComponent={ActionError} onError={display_error} >
-                <ActionContainer started={started.current} />
+                <ActionContainer started={started.current} undo={undo} />
               </ErrorBoundary>
             </section>
 

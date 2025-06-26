@@ -1,11 +1,11 @@
 // main
-import {ReactElement, useContext, useEffect, useRef, useCallback} from "react"
+import {ReactElement, useContext, useEffect, useRef, useCallback, MutableRefObject} from "react"
 import {EditorContext, MessageContext} from 'service/context'
 import {useSelector, useDispatch} from 'react-redux'
 import {isMobile} from 'react-device-detect'
 import {EditorState} from 'draft-js'
 // util
-import {activePreviousHistory, undoneContent, addContentHistory} from 'util/historyHandler'
+import {undoneContent, addContentHistory} from 'util/historyHandler'
 import {is_message, create_cause, create_error} from 'util/errorHandler'
 import {clipboardAction} from 'util/textHandler'
 import {changeColor} from 'service/buttonSlice'
@@ -19,14 +19,13 @@ import TemplateButton from './TemplateButton'
 
 const location = 'C-ACTION'
 
-const ActionContainer = ({started}:{started:boolean}): ReactElement => {
+const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject<boolean>}): ReactElement => {
   	// eslint-disable-next-line
 	const [editorState, setEditorState, editorRef] = useContext(EditorContext),
   		  [setAlertMessage] = useContext(MessageContext);
 
   	const stateHistory = useSelector((state:any)=>state.history),
-  		  dispatch = useDispatch(),
-  		  undo = useRef<boolean>(false)
+  		  dispatch = useDispatch()
 
 	/**
 	* Check the new content and Update the editor
@@ -44,9 +43,12 @@ const ActionContainer = ({started}:{started:boolean}): ReactElement => {
 
 			// set new content
 			if (newState instanceof EditorState) {
+
+      			console.log('check')
 				setEditorState(newState)
+
 				newText = newState.getCurrentContent().getPlainText()
-      			addContentHistory(dispatch, editorRef, newText)
+  				addContentHistory(dispatch, editorRef, newText)
 			}
 
 			dispatch(changeColor(action + ' success-color-btn'))
@@ -65,29 +67,12 @@ const ActionContainer = ({started}:{started:boolean}): ReactElement => {
 	* Handle the actions from buttons
 	*/
 	const handleAction = async (action:string):Promise<void> => {
-		if (action === Action.undo) 
-		{
-			activePreviousHistory(dispatch)
-			undo.current = true
-			return
+		undo.current = action === Action.undo;
+		const newState = await clipboardAction(action, editorRef, dispatch)
+		if (!undo.current) {
+			checkNewState(newState, action)
 		}
-
-		// if (contentLength === 0) return;
-		const newState = await clipboardAction(action, editorRef)
-		checkNewState(newState, action)
 	}
-
-	/**
-	 * Set the new content from history
-	 */
-  	useEffect(()=>{
-  		if (!undo.current) return
-
-		const newState = undoneContent(stateHistory, dispatch)
-		checkNewState(newState, Action.undo)
-
-		undo.current = false
-  	}, [checkNewState, stateHistory])
 
 	useEffect(()=>{
   		if (actionsData.length === 0) {

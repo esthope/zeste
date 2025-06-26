@@ -6,7 +6,7 @@ import {Case, Action} from 'constant/Interactions';
 import * as Msg from 'constant/Messages';
 import {create_error, create_cause, create_warning, create_internal_error, is_message} from 'util/errorHandler';
 import {getRaws, getSelection, createContent, clearContent} from 'util/editorHandler';
-import {activePreviousHistory, undoneContent} from 'util/historyHandler'
+import {downgradeHistory, undoneContent} from 'util/historyHandler'
 
 // error mail
 let cause:Cause|undefined,
@@ -255,7 +255,7 @@ export const updateTextCase = (action:string, editorState:any, setAlertMessage:F
  * Update the editor content and/or use the clipboard
  * @param  {string} action code to decide the action to excecute
  */
-export const clipboardAction = async (action:string, editorRef:any, dispatch?:Function, stateHistory?:Array<any>):Promise<any> =>
+export const clipboardAction = async (action:string, editorRef:any, dispatch?:Function):Promise<any> =>
 {
 	let newContent:any;
 	const {clipboard} = navigator,
@@ -303,6 +303,13 @@ export const clipboardAction = async (action:string, editorRef:any, dispatch?:Fu
 					cause = create_cause('ACTION', location, err)
 					return create_error(Msg.PAST_ERR, cause)
 				})
+			break;
+			case Action.undo:
+				if (dispatch) {
+					console.log('1 handle')
+					downgradeHistory(dispatch)
+				}
+
 			break;
 		}
 

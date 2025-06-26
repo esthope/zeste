@@ -29,19 +29,18 @@ export const addContentHistory = (dispatch:Function, editorRef:RefObject<Editor>
   }
 }
 
-export const activePreviousHistory = (dispatch:Function):void=>{
+export const downgradeHistory = (dispatch:Function):void=>{
+  console.log('2 down')
   dispatch(activePrecedent())
 }
 
-export const undoneContent = (stateHistory:Array<any>, dispatch:Function):EditorState|Message=>{
+export const undoneContent = (stateHistory:Array<any>):EditorState|Message=>{
   let newContent:any;
 
   try
   {
-    activePreviousHistory(dispatch)
   	const activeHistory:any = getActiveHistory(stateHistory)
-
-    console.log('undo...', activeHistory.content)
+    console.log('3 undone : ', activeHistory)
 
     if (activeHistory.hasOwnProperty('content')) {
       newContent = createContent(activeHistory.content)
@@ -87,7 +86,8 @@ export const getActiveHistory = (stateHistory:Array<any>):History => {
   return stateHistory.find((history:History)=>history.active)
 }
 
-export const getActiveIndex = (stateHistory:Array<any>):number => {
+export const getActiveIndex = (stateHistory:Array<any>):number|any => {
+  if (!Array.isArray(stateHistory)) {console.log(stateHistory); return} //[!]
   const currentIndex = stateHistory.findIndex((content:any)=>content.active)
   return currentIndex ?? stateHistory.length 
 }
