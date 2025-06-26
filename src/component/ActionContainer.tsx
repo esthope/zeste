@@ -44,7 +44,6 @@ const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject
 			// set new content
 			if (newState instanceof EditorState) {
 
-      			console.log('check')
 				setEditorState(newState)
 
 				newText = newState.getCurrentContent().getPlainText()

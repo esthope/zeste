@@ -306,10 +306,8 @@ export const clipboardAction = async (action:string, editorRef:any, dispatch?:Fu
 			break;
 			case Action.undo:
 				if (dispatch) {
-					console.log('1 handle')
-					downgradeHistory(dispatch)
+					// downgradeHistory(dispatch)
 				}
-
 			break;
 		}
 

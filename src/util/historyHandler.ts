@@ -30,7 +30,6 @@ export const addContentHistory = (dispatch:Function, editorRef:RefObject<Editor>
 }
 
 export const downgradeHistory = (dispatch:Function):void=>{
-  console.log('2 down')
   dispatch(activePrecedent())
 }
 
@@ -40,7 +39,6 @@ export const undoneContent = (stateHistory:Array<any>):EditorState|Message=>{
   try
   {
   	const activeHistory:any = getActiveHistory(stateHistory)
-    console.log('3 undone : ', activeHistory)
 
     if (activeHistory.hasOwnProperty('content')) {
       newContent = createContent(activeHistory.content)

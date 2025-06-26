@@ -4,12 +4,12 @@ import {useSelector, useDispatch} from 'react-redux'
 import {ErrorBoundary} from "react-error-boundary"
 import {EditorState, Editor} from "draft-js"
 // util
-import * as CustomMsg from 'constant/Messages'
+import * as Msg from 'constant/Messages'
 import {EditorContext, MessageContext} from 'service/context'
 import {getContentLength, updateTextCase, clipboardAction} from 'util/textHandler'
 import {initialMessage, get_boundary_error, create_error, create_cause, is_message} from "util/errorHandler"
 import {handle_press, getInteractionsKeys} from 'util/dataHandler'
-import {interactionsData, Case} from 'constant/Interactions'
+import {interactionsData, Case, Action} from 'constant/Interactions'
 import {addContentHistory} from 'util/historyHandler'
 import {changeColor} from 'service/buttonSlice'
 import {Message} from 'constant/interfaces'
@@ -23,6 +23,7 @@ import ActionContainer from 'component/ActionContainer'
 import AlertMessage from 'component/AlertMessage'
 
 import {downgradeHistory, undoneContent} from 'util/historyHandler'
+const location = 'S-HOME'
 
 const keys = getInteractionsKeys(interactionsData),
       cases = Object.values(Case);
@@ -43,6 +44,39 @@ const Home = ():ReactElement => {
         stateHistory = useSelector((state:any)=>state.history),
         dispatch = useDispatch()
 
+  const checkNewState = (newState:any, action:string) => {
+    try
+    {
+      let newText:string|undefined = undefined;
+
+      // getting new state failed
+      if (is_message(newState))
+        throw newState
+
+      // set new content
+      if (newState instanceof EditorState) {
+        setEditorState(newState)
+        // [!] ne prend pas le style
+        newText = newState.getCurrentContent().getPlainText()
+        // console.log(editorRef.current.editor.innerText, newText)
+      }
+
+      // addContentHistory(dispatch, editorRef, newText)
+
+      // [!] button color
+      dispatch(changeColor(`${action} success-color-btn`))
+    }
+    catch(err:any)
+    {
+      console.log('check')
+      const cause = create_cause('CHECK', location, err),
+            errorMsg = (is_message(err)) ? err : create_error(Msg.ACTION_FAILED, cause)
+
+      dispatch(changeColor(action + ` ${err?.level ?? 'error'}-color-btn`))
+      setAlertMessage(errorMsg)
+    }
+  }
+
   /**
    * Listen the key shortcut for the editor functionalities
    * Filter the keys and determination of the action or new case requested
@@ -52,8 +86,13 @@ const Home = ():ReactElement => {
   const key_listener = useCallback(async (event:KeyboardEvent):Promise<void> =>
   {
     if (event.key === 'Control' || !event.ctrlKey || !editorRef?.current) return;
+
     let newText:string|undefined = undefined,
         newState:any = null
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.returnValue=false;
 
     // ? editorHasFocus
     const hasFocus = editorRef.current.editor === document.activeElement,
@@ -77,31 +116,20 @@ const Home = ():ReactElement => {
       else if (askedInter)
       {
         // no prevent default is needed for action
-        event.preventDefault();
+        if (askedInter === Action.undo) {
+          console.log('ok')
+          undo.current = true
+        }
         newState = await clipboardAction(askedInter, editorRef, dispatch)
       }
 
-      // getting new state failed
-      if (is_message(newState))
-        throw newState
-
-      // set new content
-      if (newState instanceof EditorState) {
-        setEditorState(newState)
-        // [!] ne prend pas le style
-        newText = newState.getCurrentContent().getPlainText()
-        // console.log(editorRef.current.editor.innerText, newText)
-      }
-
-      // addContentHistory(dispatch, editorRef, newText)
-
-      // [!] button color
-      dispatch(changeColor(`${askedInter} success-color-btn`))
+      checkNewState(newState, askedInter)
     }
     catch(err:any)
     {
-      const cause = create_cause('INTERACTION', 'S-HOME', err),
-            errorMsg = (is_message(err)) ? err : create_error(CustomMsg.TEXT_UP, cause)
+      console.log('listner')
+      const cause = create_cause('INTERACTION', location, err),
+            errorMsg = (is_message(err)) ? err : create_error(Msg.TEXT_UP, cause)
 
       // [!] button color
       setAlertMessage(errorMsg)
@@ -130,12 +158,10 @@ const Home = ():ReactElement => {
   }, [editorState, key_listener])
 
   useEffect(()=>{
-    // console.log(undo.current)
+    console.log(stateHistory)
     if (!undo.current) return
-      console.log('3 home')
-      console.log(stateHistory)
-      // const newState = undoneContent(stateHistory)
-      // checkNewState(newState, Action.undo)
+    const newState = undoneContent(stateHistory)
+    checkNewState(newState, Action.undo)
     undo.current = false
   }, [stateHistory])
 

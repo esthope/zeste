@@ -87,7 +87,7 @@
 			"entry": "undo",
 			"unactive": false,
 			"label": "état précédent",
-			"focus": false,
+			"focus": true,
 			"key": "Z"
 		},
 		{

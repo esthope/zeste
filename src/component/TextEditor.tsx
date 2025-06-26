@@ -1,6 +1,6 @@
 // main
-import {RichUtils, Editor, EditorState, Modifier, SelectionState} from 'draft-js';
-import {ReactElement, useState, useEffect, useContext} from "react";
+import {RichUtils, Editor, EditorState, Modifier, SelectionState, getDefaultKeyBinding} from 'draft-js';
+import {ReactElement, useState, useEffect, useContext, KeyboardEvent} from "react";
 import {addContentHistory} from 'util/historyHandler'
 import {useDispatch} from 'react-redux'
 import "draft-js/dist/Draft.css";
@@ -31,13 +31,24 @@ const TextEditor = ({contentLength}:{contentLength:number}): ReactElement => {
         [setAlertMessage] = useContext(MessageContext)
 
   const dispatch = useDispatch()
+
+  const customKeyBinding = (event:KeyboardEvent):string|null => {
+    const commandEvent = getDefaultKeyBinding(event);
+    console.log(commandEvent)
+    if (commandEvent === 'undo') {
+      return 'handled';
+    }
+    return commandEvent
+  }
+
   /**
    * Listen the delete command of DraftJS to cancel it 
    * It uses the shortcut ctrl•D and ctrl•maj•D. We need those for the selection handler
    * @param  {string}       command     The command name 
    * @param  {EditorState}  editorState The current state of the editor content
    */
-  const onPreventDelete = (command:string, editorState:EditorState):any => {
+  const onPreventCommand = (command:string, editorState:EditorState):any => {
+    console.log('command', command)
     const event = window.event;
 
     // add sentence to history
@@ -173,7 +184,8 @@ const TextEditor = ({contentLength}:{contentLength:number}): ReactElement => {
         ref={editorRef}
         placeholder="Inscrire le texte"
         editorState={editorState}
-        handleKeyCommand={onPreventDelete}
+        handleKeyCommand={onPreventCommand}
+        keyBindingFn={customKeyBinding}
         customStyleMap={{ HIGHLIGHT: { backgroundColor: colors.ocher } }}
         onBlur={()=>handleHistory(editorState, true)}
         onChange={onChange} />

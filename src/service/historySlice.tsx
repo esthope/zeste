@@ -51,6 +51,7 @@ const historySlice = createSlice({
 			try
 			{
 				const current_index = getActiveIndex(state)
+
 				if ((typeof current_index !== 'number') || state.length === 0 || current_index <= 0) return
 
 				state[current_index].active = false;
