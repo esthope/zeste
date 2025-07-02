@@ -1,8 +1,10 @@
 // main
 import {RichUtils, Editor, EditorState, Modifier, SelectionState, getDefaultKeyBinding} from 'draft-js';
-import {ReactElement, useState, useEffect, useContext, KeyboardEvent} from "react";
-import {addContentHistory} from 'util/historyHandler'
-import {useDispatch} from 'react-redux'
+import * as reactTypes from 'react'
+import {useState, useEffect, useContext} from "react";
+import {addContentHistory, addVersion} from 'util/historyHandler'
+import {getRaws} from 'util/editorHandler'
+import {useSelector, useDispatch} from 'react-redux'
 import "draft-js/dist/Draft.css";
 // util
 import {EditorContext, MessageContext} from 'service/context';
@@ -21,7 +23,7 @@ let errorMsg:Message,
 const colors:any = style,
       wordReg = new RegExp('(?:(?! ).)+ $') //'/(?:(?! ).)+ $/'
 
-const TextEditor = ({contentLength}:{contentLength:number}): ReactElement => {
+const TextEditor = ({contentLength}:{contentLength:number}): reactTypes.ReactElement => {
 
   const [selectionClass, setSelectionClass] = useState<string>(''),
         [selectCount, setSelectCount] = useState<number>(0),
@@ -30,11 +32,12 @@ const TextEditor = ({contentLength}:{contentLength:number}): ReactElement => {
   const [editorState, setEditorState, editorRef] = useContext(EditorContext),
         [setAlertMessage] = useContext(MessageContext)
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch(),
+        stateHistory2 = useSelector((state:any)=>state.history2),
+        version = useSelector((state:any)=>state.version)
 
-  const customKeyBinding = (event:KeyboardEvent):string|null => {
+  const customKeyBinding = (event:reactTypes.KeyboardEvent):string|null => {
     const commandEvent = getDefaultKeyBinding(event);
-    console.log(commandEvent)
     if (commandEvent === 'undo') {
       return 'handled';
     }
@@ -54,6 +57,8 @@ const TextEditor = ({contentLength}:{contentLength:number}): ReactElement => {
     // add sentence to history
     if (command === 'split-block')
     {
+      // OLD
+      // addVersion ici ?
       addContentHistory(dispatch, editorRef)
     }
 
@@ -67,8 +72,10 @@ const TextEditor = ({contentLength}:{contentLength:number}): ReactElement => {
 
   const handleHistory = (editorState:EditorState, force:boolean=false):void => {
     const currentText = editorState.getCurrentContent().getPlainText()
+
     if (force || wordReg.test(currentText)) {
-      addContentHistory(dispatch, editorRef)
+      const newRaw = getRaws(editorState)
+      addVersion(dispatch, newRaw, stateHistory2, version.current)
     }
   }
   /**

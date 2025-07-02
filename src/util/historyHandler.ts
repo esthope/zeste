@@ -1,21 +1,52 @@
 // main
-import {RefObject} from "react";
+import {RefObject} from "react"
 // util
-import {addContent, activePrecedent} from 'service/historySlice'
-import {createContent} from 'util/editorHandler'
-import {create_error, create_internal_error, create_cause, is_message} from 'util/errorHandler';
-import {get_inner_text} from 'util/textHandler';
+import {create_internal_error, create_cause, is_message} from 'util/errorHandler'
+import {decrementVersion, incrementVersion} from 'service/versionSlice'
+import {addContent} from 'service/historySlice'
+import {get_inner_text} from 'util/textHandler'
+import * as hist from 'service/historySlice2'
 // constant
-import {ACTION_FAILED} from 'constant/Messages';
-import {Editor, EditorState} from 'draft-js';
-import {Message, History} from 'constant/interfaces';
+import {History, Raw} from 'constant/interfaces'
+import {Editor} from 'draft-js'
+import {Action} from 'constant/Interactions'
 
 const location = 'U-HISTORY'
 
+export const addVersion = (dispatch:Function, newRaw:Raw, history:Array<any>, versionID:number):void => {
+  try
+  {
+    const currentRaw = getCurrentRaw(history, versionID),
+          currentObj = JSON.stringify(currentRaw.blocks),
+          newObj = JSON.stringify(newRaw.blocks)
+
+    console.log(newObj)
+    if (currentObj === newObj) return
+
+    dispatch(hist.addContent(newRaw))
+    // n'incrémente pas la longueur pour l'utiliser comme index 
+    // permet de définir automatiquement le dernier index
+    dispatch(incrementVersion(history.length))
+  }
+  catch(err)
+  {
+    console.log('ADD HIST', err)
+    const cause = create_cause('UNDO', location, err)
+    create_internal_error('[!] tech', cause) 
+  }
+}
+
+export const changeVersion = (dispatch:Function, mode:string): void => {
+  if (mode === Action.undo)
+    dispatch(decrementVersion())
+}
+
+// [OLD]
 export const addContentHistory = (dispatch:Function, editorRef:RefObject<Editor>, text?:string):void => {
   try
   {
     // [!] que le texte : ne prend pas le style si le texte en a un déjà
+
     const newContent = text ?? get_inner_text(editorRef)
 
     if (typeof newContent === 'string')
@@ -29,36 +60,7 @@ export const addContentHistory = (dispatch:Function, editorRef:RefObject<Editor>
   }
 }
 
-export const downgradeHistory = (dispatch:Function):void=>{
-  dispatch(activePrecedent())
-}
-
-export const undoneContent = (stateHistory:Array<any>):EditorState|Message=>{
-  let newContent:any;
-
-  try
-  {
-  	const activeHistory:any = getActiveHistory(stateHistory)
-
-    if (activeHistory.hasOwnProperty('content')) {
-      newContent = createContent(activeHistory.content)
-    } else {
-      // [!]
-      const cause = create_cause('UNDO', location, 'L\'éditeur n\'a pas de contenu actif à afficher en tant que nouveau contenu')
-      newContent = create_error(ACTION_FAILED, cause)
-    }
-
-    return newContent;
-  }
-  catch(err)
-  {
-    // [!]
-    console.log('UNDO', err)
-    const cause = create_cause('UNDO', location, err)
-    return create_error(ACTION_FAILED, cause)
-  }
-}
-
+// OLD ?
 export const addLastContent = (dispatch:Function, editorRef:RefObject<Editor>, stateHistory:Array<any>):void => {
    try
    {
@@ -80,8 +82,14 @@ export const addLastContent = (dispatch:Function, editorRef:RefObject<Editor>, s
    }
 }
 
+// OLD
 export const getActiveHistory = (stateHistory:Array<any>):History => {
   return stateHistory.find((history:History)=>history.active)
+}
+
+export const getCurrentRaw = (stateHistory2:Array<any>, versionID:number):Raw => {
+  const currentRaw = stateHistory2[versionID]
+  return currentRaw
 }
 
 export const getActiveIndex = (stateHistory:Array<any>):number|any => {
@@ -89,5 +97,7 @@ export const getActiveIndex = (stateHistory:Array<any>):number|any => {
   const currentIndex = stateHistory.findIndex((content:any)=>content.active)
   return currentIndex ?? stateHistory.length 
 }
+
+export const changeRaws = (): void => {}
 
 // delete history from new active element

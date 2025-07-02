@@ -7,10 +7,11 @@ import {EditorState, Editor} from "draft-js"
 import * as Msg from 'constant/Messages'
 import {EditorContext, MessageContext} from 'service/context'
 import {getContentLength, updateTextCase, clipboardAction} from 'util/textHandler'
+import {getRaws, createContent} from 'util/editorHandler'
 import {initialMessage, get_boundary_error, create_error, create_cause, is_message} from "util/errorHandler"
 import {handle_press, getInteractionsKeys} from 'util/dataHandler'
 import {interactionsData, Case, Action} from 'constant/Interactions'
-import {addContentHistory} from 'util/historyHandler'
+import {addVersion} from 'util/historyHandler'
 import {changeColor} from 'service/buttonSlice'
 import {Message} from 'constant/interfaces'
 // element
@@ -22,7 +23,6 @@ import TextEditor from 'component/TextEditor'
 import ActionContainer from 'component/ActionContainer'
 import AlertMessage from 'component/AlertMessage'
 
-import {downgradeHistory, undoneContent} from 'util/historyHandler'
 const location = 'S-HOME'
 
 const keys = getInteractionsKeys(interactionsData),
@@ -38,16 +38,16 @@ const Home = ():ReactElement => {
         started = useRef<boolean>(false), // [!] adapter avec redux
         undo = useRef<boolean>(false),
         // memo
-        editorValues = useMemo(()=>([editorState, setEditorState, editorRef]), [editorState]),
+        editorValues = useMemo(()=>([editorState, setEditorState, editorRef]), [editorState]), // [!] adapter avec redux
         messageValues = useMemo(()=>([setAlertMessage, alertMessage]), [alertMessage]),
         // redux
-        stateHistory = useSelector((state:any)=>state.history),
+        stateHistory2 = useSelector((state:any)=>state.history2),
+        version = useSelector((state:any)=>state.version),
         dispatch = useDispatch()
 
   const checkNewState = (newState:any, action:string) => {
     try
     {
-      let newText:string|undefined = undefined;
 
       // getting new state failed
       if (is_message(newState))
@@ -57,11 +57,9 @@ const Home = ():ReactElement => {
       if (newState instanceof EditorState) {
         setEditorState(newState)
         // [!] ne prend pas le style
-        newText = newState.getCurrentContent().getPlainText()
-        // console.log(editorRef.current.editor.innerText, newText)
       }
 
-      // addContentHistory(dispatch, editorRef, newText)
+      // [!] addVersion(dispatch, editorRef, newText)
 
       // [!] button color
       dispatch(changeColor(`${action} success-color-btn`))
@@ -90,10 +88,6 @@ const Home = ():ReactElement => {
     let newText:string|undefined = undefined,
         newState:any = null
 
-    event.preventDefault();
-    event.stopPropagation();
-    event.returnValue=false;
-
     // ? editorHasFocus
     const hasFocus = editorRef.current.editor === document.activeElement,
           interID = handle_press(event, keys, interactionsData, hasFocus),
@@ -117,7 +111,6 @@ const Home = ():ReactElement => {
       {
         // no prevent default is needed for action
         if (askedInter === Action.undo) {
-          console.log('ok')
           undo.current = true
         }
         newState = await clipboardAction(askedInter, editorRef, dispatch)
@@ -158,12 +151,18 @@ const Home = ():ReactElement => {
   }, [editorState, key_listener])
 
   useEffect(()=>{
-    console.log(stateHistory)
     if (!undo.current) return
-    const newState = undoneContent(stateHistory)
-    checkNewState(newState, Action.undo)
+
+    console.log(stateHistory2)
+    console.log(version.current)
+    const newRaw = stateHistory2[version.current]
+    console.log(newRaw)
+    setEditorState(createContent(newRaw))
+
+    // checkNewState(newState, Action.undo)
+
     undo.current = false
-  }, [stateHistory])
+  }, [version])
 
   return (
     <>

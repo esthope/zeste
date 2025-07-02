@@ -1,7 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit'
 import {getActiveHistory, getActiveIndex} from 'util/historyHandler'
 import {create_internal_error, create_cause} from 'util/errorHandler';
-import {History} from 'constant/interfaces';
 
 const location = 'S-HISTORY'
 
@@ -46,41 +45,9 @@ const historySlice = createSlice({
       			const cause = create_cause('HIST', location, err)
       			create_internal_error('[!] tech', cause) 
 			}
-		},
-		activePrecedent: (state:any/*, action:any*/):any => {
-			try
-			{
-				const current_index = getActiveIndex(state)
-
-				if ((typeof current_index !== 'number') || state.length === 0 || current_index <= 0) return
-
-				state[current_index].active = false;
-				state[current_index-1].active = true;
-			}
-			catch(err)
-			{
-				// [DEV]
-				console.log(err)
-      			const cause = create_cause('HIST', location, err)
-      			create_internal_error('[!] tech', cause) 
-			}
-		},
-		getActive: (state:any):any => {
-  			try
-			{
-				const current_index = state.findIndex((history:History, index:number) => history.active)
-				// return current_index
-			}
-			catch(err)
-			{
-				// [DEV]
-				console.log(err)
-      			const cause = create_cause('HIST', location, err)
-      			create_internal_error('[!] tech', cause) 
-			}
 		}
 	}
 })
 
-export const {addContent, activePrecedent} = historySlice.actions
+export const {addContent} = historySlice.actions
 export default historySlice.reducer

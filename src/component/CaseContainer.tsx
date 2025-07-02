@@ -1,14 +1,15 @@
 // main
 import {ReactElement, useContext, useEffect} from "react";
-import {useDispatch} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import {isMobile} from 'react-device-detect';
 import {EditorState} from "draft-js";
 // util
 import {MessageContext, EditorContext} from 'service/context';
 import {is_message, create_cause} from 'util/errorHandler';
-import {addContentHistory} from 'util/historyHandler'
 import {updateTextCase} from 'util/textHandler';
 import {Interaction} from 'constant/interfaces';
+import {addVersion} from 'util/historyHandler'
+import {getRaws} from 'util/editorHandler'
 import * as Msg from 'constant/Messages';
 // element
 import {Case, casesData} from 'constant/Interactions';
@@ -20,12 +21,13 @@ const location = 'C-CASE';
 
 const CaseContainer = ({started}:{started:boolean}): ReactElement => {
 
-  	const [editorState, setEditorState, editorRef] = useContext(EditorContext),
+  	const [editorState, setEditorState] = useContext(EditorContext),
   		  [setAlertMessage] = useContext(MessageContext),
-  		  dispatch = useDispatch()
+  		  dispatch = useDispatch(),
+  		  stateHistory2 = useSelector((state:any)=>state.history2),
+          version = useSelector((state:any)=>state.version)
 
     const handle_text = (action:string)=>{
-		let newText:string|undefined = undefined;
     	const newState = updateTextCase(action, editorState, setAlertMessage);
 
     	if (is_message(newState))
@@ -37,10 +39,9 @@ const CaseContainer = ({started}:{started:boolean}): ReactElement => {
 		// set new content
 		if (newState instanceof EditorState){
 			setEditorState(newState)
-			newText = newState.getCurrentContent().getPlainText()
+			const newRaw = getRaws(newState)
+	      	addVersion(dispatch, newRaw, stateHistory2, version.current)
 		}
-
-    	addContentHistory(dispatch, editorRef, newText)
     }
 
 	useEffect(()=>{

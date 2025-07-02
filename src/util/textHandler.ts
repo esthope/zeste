@@ -1,12 +1,12 @@
-import {RefObject} from "react";
-import {Editor, ContentState} from "draft-js";
 import {Selection, Block, Cause} from 'constant/interfaces';
 import {Case, Action} from 'constant/Interactions';
+import {Editor, ContentState} from "draft-js";
+import {RefObject} from "react";
 // util
-import * as Msg from 'constant/Messages';
 import {create_error, create_cause, create_warning, create_internal_error, is_message} from 'util/errorHandler';
 import {getRaws, getSelection, createContent, clearContent} from 'util/editorHandler';
-import {downgradeHistory, undoneContent} from 'util/historyHandler'
+import {changeVersion} from 'util/historyHandler'
+import * as Msg from 'constant/Messages';
 
 // error mail
 let cause:Cause|undefined,
@@ -306,13 +306,13 @@ export const clipboardAction = async (action:string, editorRef:any, dispatch?:Fu
 			break;
 			case Action.undo:
 				if (dispatch) {
-					// downgradeHistory(dispatch)
+					changeVersion(dispatch, Action.undo)
 				}
 			break;
 		}
 
 		if (action === Action.reset || action === Action.cut)
-			newContent = (is_message(newContent)) ? newContent : clearContent();
+			newContent = (is_message(newContent)) ? newContent : clearContent()
 	}
 	catch(err:any)
 	{

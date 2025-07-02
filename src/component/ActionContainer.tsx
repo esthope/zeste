@@ -1,13 +1,14 @@
 // main
-import {ReactElement, useContext, useEffect, useRef, useCallback, MutableRefObject} from "react"
+import {ReactElement, useContext, useEffect, useCallback, MutableRefObject} from "react"
 import {EditorContext, MessageContext} from 'service/context'
 import {useSelector, useDispatch} from 'react-redux'
 import {isMobile} from 'react-device-detect'
 import {EditorState} from 'draft-js'
 // util
-import {undoneContent, addContentHistory} from 'util/historyHandler'
+import {addVersion} from 'util/historyHandler'
 import {is_message, create_cause, create_error} from 'util/errorHandler'
 import {clipboardAction} from 'util/textHandler'
+import {getRaws} from 'util/editorHandler'
 import {changeColor} from 'service/buttonSlice'
 import * as Msg from 'constant/Messages'
 // constant
@@ -24,7 +25,8 @@ const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject
 	const [editorState, setEditorState, editorRef] = useContext(EditorContext),
   		  [setAlertMessage] = useContext(MessageContext);
 
-  	const stateHistory = useSelector((state:any)=>state.history),
+  	const stateHistory2 = useSelector((state:any)=>state.history2),
+          version = useSelector((state:any)=>state.version),
   		  dispatch = useDispatch()
 
 	/**
@@ -35,8 +37,6 @@ const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject
   	const checkNewState = useCallback((newState:any, action:string) => {
   		try
 		{
-			let newText:string|undefined = undefined;
-
 			// getting new state failed
 			if (is_message(newState))
 				throw newState
@@ -45,9 +45,8 @@ const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject
 			if (newState instanceof EditorState) {
 
 				setEditorState(newState)
-
-				newText = newState.getCurrentContent().getPlainText()
-  				addContentHistory(dispatch, editorRef, newText)
+      			const newRaw = getRaws(newState)
+      			addVersion(dispatch, newRaw, stateHistory2, version.current)
 			}
 
 			dispatch(changeColor(action + ' success-color-btn'))
@@ -67,6 +66,7 @@ const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject
 	*/
 	const handleAction = async (action:string):Promise<void> => {
 		undo.current = action === Action.undo;
+
 		const newState = await clipboardAction(action, editorRef, dispatch)
 		if (!undo.current) {
 			checkNewState(newState, action)
