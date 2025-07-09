@@ -20,8 +20,8 @@ export const addVersion = (dispatch:Function, newRaw:Raw, history:Array<any>, ve
           currentObj = JSON.stringify(currentRaw.blocks),
           newObj = JSON.stringify(newRaw.blocks)
 
-    console.log(newObj)
     if (currentObj === newObj) return
+    console.log(newObj)
 
     dispatch(hist.addContent(newRaw))
     // n'incrémente pas la longueur pour l'utiliser comme index 

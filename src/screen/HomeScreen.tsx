@@ -151,6 +151,7 @@ const Home = ():ReactElement => {
   }, [editorState, key_listener])
 
   useEffect(()=>{
+    console.log(version)
     if (!undo.current) return
 
     console.log(stateHistory2)

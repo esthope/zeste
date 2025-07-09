@@ -2,7 +2,7 @@
 import {RichUtils, Editor, EditorState, Modifier, SelectionState, getDefaultKeyBinding} from 'draft-js';
 import * as reactTypes from 'react'
 import {useState, useEffect, useContext} from "react";
-import {addContentHistory, addVersion} from 'util/historyHandler'
+import {addVersion} from 'util/historyHandler'
 import {getRaws} from 'util/editorHandler'
 import {useSelector, useDispatch} from 'react-redux'
 import "draft-js/dist/Draft.css";
@@ -21,7 +21,9 @@ let errorMsg:Message,
     cause:Cause;
 
 const colors:any = style,
-      wordReg = new RegExp('(?:(?! ).)+ $') //'/(?:(?! ).)+ $/'
+      wordReg = new RegExp('(?:(?! ).)+ $'), //'/(?:(?! ).)+ $/'
+      commands = ['split-block', 'backspace-word'],
+      lastCharacter = ''
 
 const TextEditor = ({contentLength}:{contentLength:number}): reactTypes.ReactElement => {
 
@@ -55,25 +57,30 @@ const TextEditor = ({contentLength}:{contentLength:number}): reactTypes.ReactEle
     const event = window.event;
 
     // add sentence to history
-    if (command === 'split-block')
+    if (commands.includes(command))
     {
-      // OLD
-      // addVersion ici ?
-      addContentHistory(dispatch, editorRef)
+      // [!] a l'état en retarf
+      const newRaw = getRaws(editorState)
+      addVersion(dispatch, newRaw, stateHistory2, version.current)
     }
 
-    if ((command === 'delete') &&
-        (event instanceof KeyboardEvent
-        && event?.ctrlKey
-      )) {
+    if (command === 'delete' &&
+        (event instanceof KeyboardEvent && event?.ctrlKey )) {
       return 'handled'
     }
   }
 
   const handleHistory = (editorState:EditorState, force:boolean=false):void => {
     const currentText = editorState.getCurrentContent().getPlainText()
+    console.log(currentText)
 
+
+    // [!] pas efficace si on reprend du imlieu 
+    // si c'est espace
+    // si groupe de plusiuers charactères
+    // si ctrl v 
     if (force || wordReg.test(currentText)) {
+
       const newRaw = getRaws(editorState)
       addVersion(dispatch, newRaw, stateHistory2, version.current)
     }
