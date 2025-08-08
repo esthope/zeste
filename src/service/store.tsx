@@ -4,7 +4,6 @@ import historyReducer2 from 'service/historySlice2'
 import versionReducer from 'service/versionSlice'
 import buttonReducer from 'service/buttonSlice'
 
-
 const store = configureStore({
 	reducer: {
 		history: historyReducer,

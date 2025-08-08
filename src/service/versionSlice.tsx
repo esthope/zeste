@@ -1,7 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit'
 
 type ReduceAction = {payload:number}
-
 const versionSlice = createSlice({
 	name: 'version',
 	initialState: {current: 0},
