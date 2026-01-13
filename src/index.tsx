@@ -20,10 +20,4 @@ root.render(
   </React.StrictMode>
 )
 
-reportWebVitals();
-
-/*
-store : conteitn les états et la logique pour les maj
-reducer : comment on modifie l'état
-slice : référence un état, les reducers et les actions associées
-**/
+reportWebVitals()
