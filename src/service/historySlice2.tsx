@@ -17,6 +17,8 @@ const historySlice = createSlice({
 			try
 			{
 				const {payload} = action
+				// [UN] comparer les états entiers pour ne pas faire de doublon de suite
+				console.log(state[state.lentgh -1] !== payload)
 				state.push(payload)
 			}
 			catch(err)

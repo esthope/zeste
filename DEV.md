@@ -1,6 +1,6 @@
-comparer les états entiers pour ne pas faire de doublon, dans historySLice
-aller dans evenement du redo pour le configurer, surement dans historyHandler.changeVersionn
-après la décrémentation, lors du jsute avant le prochain enregistrement, supprimer ceux au dessus
+historySLice
+versionSlice.incrementVersion
+après la décrémentation, juste avant le prochain enregistrement, supprimer ceux au dessus
 
 [0, 1, 2, 3, 4, 5, a6]
 [0, 1, a2, 3, 4, 5, 6]

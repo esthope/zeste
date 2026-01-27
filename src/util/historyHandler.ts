@@ -39,6 +39,8 @@ export const addVersion = (dispatch:Function, newRaw:Raw, history:Array<any>, ve
 export const changeVersion = (dispatch:Function, mode:string): void => {
   if (mode === Action.undo)
     dispatch(decrementVersion())
+  if (mode === Action.redo)
+    dispatch(incrementVersion())
 }
 
 // [OLD]
@@ -60,7 +62,7 @@ export const addContentHistory = (dispatch:Function, editorRef:RefObject<Editor>
   }
 }
 
-// OLD ?
+// [OLD] ?
 export const addLastContent = (dispatch:Function, editorRef:RefObject<Editor>, stateHistory:Array<any>):void => {
    try
    {
@@ -82,7 +84,7 @@ export const addLastContent = (dispatch:Function, editorRef:RefObject<Editor>, s
    }
 }
 
-// OLD
+// [OLD]
 export const getActiveHistory = (stateHistory:Array<any>):History => {
   return stateHistory.find((history:History)=>history.active)
 }

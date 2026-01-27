@@ -10,8 +10,11 @@ const versionSlice = createSlice({
 				state.current -= 1
 		},
 		incrementVersion: (state:any, action:ReduceAction):void => {
-			const {payload} = action
-			state.current = payload ?? (state.current += 1)
+			// [UN] redo à configurer
+			/* const {payload} = action
+			state.current = payload ?? (state.current += 1)*/
+			if (state.current > 0 && state.current )
+				state.current -= 1
 		}
 	}
 })
