@@ -23,8 +23,8 @@ const historySlice = createSlice({
 			{
 				// [DEV]
 				console.log(err)
-      			const cause = create_cause('HIST', location, err)
-      			create_internal_error('[!] tech', cause) 
+  			const cause = create_cause('HIST', location, err)
+  			create_internal_error('[!] tech', cause)
 			}
 		}
 	}

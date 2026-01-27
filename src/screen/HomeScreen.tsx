@@ -41,14 +41,13 @@ const Home = ():ReactElement => {
         editorValues = useMemo(()=>([editorState, setEditorState, editorRef]), [editorState]), // [!] adapter avec redux
         messageValues = useMemo(()=>([setAlertMessage, alertMessage]), [alertMessage]),
         // redux
-        stateHistory2 = useSelector((state:any)=>state.history2),
+        stateHistory = useSelector((state:any)=>state.history2),
         version = useSelector((state:any)=>state.version),
         dispatch = useDispatch()
 
   const checkNewState = (newState:any, action:string) => {
     try
     {
-
       // getting new state failed
       if (is_message(newState))
         throw newState
@@ -154,9 +153,9 @@ const Home = ():ReactElement => {
     console.log(version)
     if (!undo.current) return
 
-    console.log(stateHistory2)
+    console.log(stateHistory)
     console.log(version.current)
-    const newRaw = stateHistory2[version.current]
+    const newRaw = stateHistory[version.current]
     console.log(newRaw)
     setEditorState(createContent(newRaw))
 

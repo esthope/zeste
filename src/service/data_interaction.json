@@ -87,15 +87,15 @@
 			"entry": "undo",
 			"unactive": false,
 			"label": "état précédent",
-			"focus": true,
+			"focus": false,
 			"key": "Z"
 		},
 		{
 			"data_id": "RDO",
 			"entry": "redo",
-			"unactive": true,
+			"unactive": false,
 			"label": "état suivant",
-			"focus": true,
+			"focus": false,
 			"shift": true,
 			"key": "Z"
 		},

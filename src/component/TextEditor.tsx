@@ -72,13 +72,11 @@ const TextEditor = ({contentLength}:{contentLength:number}): reactTypes.ReactEle
 
   const handleHistory = (editorState:EditorState, force:boolean=false):void => {
     const currentText = editorState.getCurrentContent().getPlainText()
-    console.log(currentText)
 
-
-    // [!] pas efficace si on reprend du imlieu 
+    // [!] pas efficace si on reprend du milieu 
     // si c'est espace
     // si groupe de plusiuers charactères
-    // si ctrl v 
+    // si ctrl v
     if (force || wordReg.test(currentText)) {
 
       const newRaw = getRaws(editorState)
