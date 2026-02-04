@@ -150,11 +150,10 @@ const Home = ():ReactElement => {
   }, [editorState, key_listener])
 
   useEffect(()=>{
-    console.log(version)
+    console.log(version.current)
+    console.log(stateHistory)
     if (!undo.current) return
 
-    console.log(stateHistory)
-    console.log(version.current)
     const newRaw = stateHistory[version.current]
     console.log(newRaw)
     setEditorState(createContent(newRaw))

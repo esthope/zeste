@@ -10,10 +10,10 @@ lors de l'enregistrement :
 
 Quand un btn est appuyé ou un remplacement
 Enregistre version quand modif editorState
-La met dans un tableau, ma marque comme active
+La met dans un tableau, la marque comme active
 Undo : active ancienne version au fur et à mesure
 Si modifie à nouveau une version antérieure
-Enregistre comme nouveau sans supprimer les autres
+Enregistre comme nouveau et supprimer les autres
 
 ```js
 history:ConvertedToRaws[];

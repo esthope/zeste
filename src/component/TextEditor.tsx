@@ -78,11 +78,12 @@ const TextEditor = ({contentLength}:{contentLength:number}): reactTypes.ReactEle
     // si groupe de plusiuers charactères
     // si ctrl v
     if (force || wordReg.test(currentText)) {
-
+      console.log('HIST')
       const newRaw = getRaws(editorState)
       addVersion(dispatch, newRaw, stateHistory2, version.current)
     }
   }
+  
   /**
    * Switch the multi selection mode
    * Save the current selection as highlight text into the editor state
@@ -192,14 +193,15 @@ const TextEditor = ({contentLength}:{contentLength:number}): reactTypes.ReactEle
         onKeyUp={(event:any):void => {handleSelection(event, editorState)}}
       >
 
+        {/* @ts-ignore*/}
         <Editor
         ref={editorRef}
-        placeholder="Inscrire le texte"
-        editorState={editorState}
-        handleKeyCommand={onPreventCommand}
-        keyBindingFn={customKeyBinding}
         customStyleMap={{ HIGHLIGHT: { backgroundColor: colors.ocher } }}
         onBlur={()=>handleHistory(editorState, true)}
+        handleKeyCommand={onPreventCommand}
+        keyBindingFn={customKeyBinding}
+        placeholder="Inscrire le texte"
+        editorState={editorState}
         onChange={onChange} />
       </div>
     </>
