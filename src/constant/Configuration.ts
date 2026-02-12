@@ -6,7 +6,7 @@ const SITE_NAME = "Zeste";
 
 const Links = [
 	{
-		text: "Les autres travaux du créateur",
+		text: "Autres travaux",
 		image: githubLogo,
 		link: "https://github.com/esthope",
 		title: "Github"
@@ -18,7 +18,7 @@ const Links = [
 		title: "LinkedIn"
 	},
 	{
-		text: "Soutenez en faisant un don",
+		text: "Soutenir avec un don",
 		image: kofiLogo,
 		link: "https://ko-fi.com/zeste_convert",
 		title: "Ko-fi"

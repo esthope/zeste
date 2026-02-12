@@ -27,7 +27,7 @@ const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject
 
   	const stateHistory2 = useSelector((state:any)=>state.history2),
           version = useSelector((state:any)=>state.version),
-  		  dispatch = useDispatch()
+  		  	dispatch = useDispatch()
 
 	/**
 	* Check the new content and Update the editor
@@ -65,6 +65,7 @@ const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject
 	* Handle the actions from buttons
 	*/
 	const handleAction = async (action:string):Promise<void> => {
+		console.log(action)
 		undo.current = action === Action.undo;
 
 		const newState = await clipboardAction(action, editorRef, dispatch)
@@ -75,7 +76,7 @@ const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject
 
 	useEffect(()=>{
   		if (actionsData.length === 0) {
-			const cause = create_cause('ACTION', location, Msg.EMPTY_DATA)
+				const cause = create_cause('ACTION', location, Msg.EMPTY_DATA)
   			throw new Error(Msg.ACTIONS, {cause: cause})
   		}
 	}, [])

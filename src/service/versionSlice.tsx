@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit'
 
-type ReduceAction = {payload:number}
+type ReduceAction = {payload:number|undefined}
 const versionSlice = createSlice({
 	name: 'version',
 	initialState: {current: 0},
@@ -9,10 +9,12 @@ const versionSlice = createSlice({
 			if (state.current > 0)
 				state.current -= 1
 		},
-		incrementVersion: (state:any, action?:ReduceAction):void => {
+		incrementVersion: (state:any, action:ReduceAction):void => {
 			// [UN] redo à configurer
 			// ne pas dépasser la taille de l'historique
+
 			const {payload} = action
+			console.log('REDO ', state.current)
 			state.current = payload ?? (state.current += 1)
 		}
 	}
