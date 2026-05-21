@@ -152,7 +152,7 @@ const Home = ():ReactElement => {
   useEffect(()=>{
     console.log(version.current)
     console.log(stateHistory)
-    if (!undo.current) return
+    if (!undo.current) return // ici
 
     const newRaw = stateHistory[version.current]
     console.log(newRaw)

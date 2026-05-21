@@ -80,7 +80,7 @@ const TextEditor = ({contentLength}:{contentLength:number}): reactTypes.ReactEle
     if (force || wordReg.test(currentText)) {
       console.log('HIST')
       const newRaw = getRaws(editorState)
-      addVersion(dispatch, newRaw, stateHistory2, version.current)
+      addVersion(dispatch, newRaw, stateHistory2, version.current) // ici
     }
   }
   

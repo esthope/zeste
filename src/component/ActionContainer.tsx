@@ -66,6 +66,12 @@ const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject
 	*/
 	const handleAction = async (action:string):Promise<void> => {
 		console.log(action)
+
+		if (action === Action.redo) {
+    	const newRaw = stateHistory[version.current]
+			// ici
+		}
+
 		undo.current = action === Action.undo;
 
 		const newState = await clipboardAction(action, editorRef, dispatch)
