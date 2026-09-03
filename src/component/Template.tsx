@@ -18,6 +18,8 @@ const Template = ():ReactElement => {
 		send_mail(errorMsg)
 	}
 
+	const year = new Date().getFullYear()
+
 	return (
 	<>
     	<ErrorBoundary onError={onError} FallbackComponent={UnavailableScreen}>
@@ -36,7 +38,7 @@ const Template = ():ReactElement => {
 	        		/>
         		))}
         	</div>
-        	<span className="rozhaone-font">Copyright © 2025 • Tous droits réservés</span>
+        	<span className="rozhaone-font">Copyright © {year} • Tous droits réservés</span>
         </footer>
 	</>
 	)
