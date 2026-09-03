@@ -14,7 +14,7 @@ const Links = [
 	{
 		text: "Contactez moi directement",
 		image: linkedinLogo,
-		link: "https://www.linkedin.com/in/lucile-demongeot-779a211a5",
+		link: "https://www.linkedin.com/in/luciledemongeot",
 		title: "LinkedIn"
 	},
 	{
