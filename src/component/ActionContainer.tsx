@@ -51,10 +51,10 @@ const ActionContainer = ({started}:{started:boolean}): ReactElement => {
 	}
 
 	useEffect(()=>{
-  		if (actionsData.length === 0) {
-			const cause = create_cause('ACTION', location, CustomMsg.EMPTY_DATA)
-  			throw new Error(CustomMsg.ACTIONS, {cause: cause})
-  		}
+		if (actionsData.length === 0) {
+		const cause = create_cause('ACTION', location, CustomMsg.EMPTY_DATA)
+			throw new Error(CustomMsg.ACTIONS, {cause: cause})
+		}
 	}, [])
 
 	return (

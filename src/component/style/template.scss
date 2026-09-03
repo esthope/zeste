@@ -2,6 +2,9 @@
 
 #error-page {
 	width: 100vw;
+	flex: 1;
+
+	img {z-index: -1}
 
 	> img {
 		position: fixed;
@@ -36,6 +39,14 @@ footer {
 
 	span {
 		font-size: .8em;
+	}
+
+	#footer-bg {
+		position: absolute;
+		max-width: 40em;
+		z-index: -1;
+		bottom: 0;
+		right: 0;
 	}
 }
 
