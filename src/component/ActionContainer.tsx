@@ -25,7 +25,7 @@ const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject
 	const [editorState, setEditorState, editorRef] = useContext(EditorContext),
   		  [setAlertMessage] = useContext(MessageContext);
 
-  	const stateHistory2 = useSelector((state:any)=>state.history2),
+  	const stateHistory = useSelector((state:any)=>state.history2),
           version = useSelector((state:any)=>state.version),
   		  	dispatch = useDispatch()
 
@@ -45,8 +45,8 @@ const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject
 			if (newState instanceof EditorState) {
 
 				setEditorState(newState)
-      			const newRaw = getRaws(newState)
-      			addVersion(dispatch, newRaw, stateHistory2, version.current)
+    			const newRaw = getRaws(newState)
+    			addVersion(dispatch, newRaw, stateHistory, version.current)
 			}
 
 			dispatch(changeColor(action + ' success-color-btn'))
@@ -59,7 +59,7 @@ const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject
 			dispatch(changeColor(action + ` ${err?.level ?? 'error'}-color-btn`))
 			setAlertMessage(errorMsg)
 		}
-  	}, [dispatch, editorRef, setAlertMessage, setEditorState])
+  	}, [dispatch, /*editorRef,*/ setAlertMessage, setEditorState, stateHistory, version])
 
 	/**
 	* Handle the actions from buttons
@@ -69,7 +69,7 @@ const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject
 
 		if (action === Action.redo) {
     	const newRaw = stateHistory[version.current]
-			// ici
+			// [DEV] ici
 		}
 
 		undo.current = action === Action.undo;
