@@ -15,17 +15,10 @@ body {
   font-family: cst.$quicksand;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
   background-color: cst.$dark-green;
 
-  background-image: url("/assets/footer_bg.svg");
-  background-position: bottom 0 right 0;
-  background-repeat: no-repeat;
-
-  position: relative;
-
   *:not(svg, path) {color: cst.$off-white}
-
+  position: relative;
   font-size: 15px;
 }
 

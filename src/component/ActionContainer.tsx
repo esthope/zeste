@@ -81,10 +81,10 @@ const ActionContainer = ({started, undo}:{started:boolean, undo:MutableRefObject
 	}
 
 	useEffect(()=>{
-  		if (actionsData.length === 0) {
-				const cause = create_cause('ACTION', location, Msg.EMPTY_DATA)
-  			throw new Error(Msg.ACTIONS, {cause: cause})
-  		}
+		if (actionsData.length === 0) {
+		const cause = create_cause('ACTION', location, CustomMsg.EMPTY_DATA)
+			throw new Error(CustomMsg.ACTIONS, {cause: cause})
+		}
 	}, [])
 
 	return (

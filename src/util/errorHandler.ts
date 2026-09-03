@@ -58,9 +58,9 @@ export const reset_alert = (setAlertMessage:Function):void => {
 
 export const get_boundary_error = (error:Error):Message => {
 	const message = (error?.cause?.hasOwnProperty('fonite')) ? `${error.message}. ${CustomMsg.REF_IF_PERSIST}.` : `${CustomMsg.TECH_ERR}. ${CustomMsg.REFRESH}.`,
-		  cause:any = error?.cause;
+		  	cause:any = error?.cause;
 
-    return create_error(message, cause, true);
+  return create_error(message, cause, true);
 }
 
 export const is_message = (result:Message|any):boolean => {
