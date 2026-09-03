@@ -1,11 +1,12 @@
-import {ContentState} from "draft-js";
 import {Selection, Block, Cause} from 'constant/interfaces';
 import {Case, Action} from 'constant/Interactions';
-
+import {Editor, ContentState} from "draft-js";
+import {RefObject} from "react";
 // util
-import * as Msg from 'constant/Messages';
-import {create_error, create_cause, create_warning, is_message} from 'util/errorHandler';
+import {create_error, create_cause, create_warning, create_internal_error, is_message} from 'util/errorHandler';
 import {getRaws, getSelection, createContent, clearContent} from 'util/editorHandler';
+import {changeVersion} from 'util/historyHandler'
+import * as Msg from 'constant/Messages';
 
 // error mail
 let cause:Cause|undefined,
@@ -196,6 +197,20 @@ export const getContentLength = (currentContent:ContentState):number => {
 	return currentContent.getPlainText().length
 }
 
+export const get_inner_text = (editorRef:RefObject<Editor>):string|void => {
+	try
+    {
+    	// [!]
+    	if (!(editorRef.current && editorRef.current.editor)) throw new Error('L\'éditeur n\'est pas référencé.')
+    	return editorRef.current.editor.innerText
+	}
+    catch(err)
+    {
+		const cause = create_cause('TECH', location, err)
+		create_internal_error('[!] tech', cause) 
+    }
+}
+
 /**
  * Choose the case treatment depending of the selected action
  * Change case, then updtate states
@@ -240,7 +255,7 @@ export const updateTextCase = (action:string, editorState:any, setAlertMessage:F
  * Update the editor content and/or use the clipboard
  * @param  {string} action code to decide the action to excecute
  */
-export const clipboardAction = async (action:string, editorRef:any):Promise<any> =>
+export const clipboardAction = async (action:string, editorRef:any, dispatch?:Function):Promise<any> =>
 {
 	let newContent:any;
 	const {clipboard} = navigator,
@@ -289,10 +304,15 @@ export const clipboardAction = async (action:string, editorRef:any):Promise<any>
 					return create_error(Msg.PAST_ERR, cause)
 				})
 			break;
+			case Action.undo:
+				if (dispatch) {
+					changeVersion(dispatch, Action.undo)
+				}
+			break;
 		}
 
 		if (action === Action.reset || action === Action.cut)
-			newContent = (is_message(newContent)) ? newContent : clearContent();
+			newContent = (is_message(newContent)) ? newContent : clearContent()
 	}
 	catch(err:any)
 	{

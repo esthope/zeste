@@ -60,3 +60,9 @@ export interface Link {
 	link: string,
 	title: string
 }
+
+export interface History {
+	content_id:number,
+	content:string,
+	active: boolean
+}

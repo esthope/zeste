@@ -1,13 +1,16 @@
 // main
 import {ReactElement, useContext, useEffect} from "react";
-import {EditorState} from "draft-js";
+import {useSelector, useDispatch} from 'react-redux'
 import {isMobile} from 'react-device-detect';
+import {EditorState} from "draft-js";
 // util
-import * as Msg from 'constant/Messages';
 import {MessageContext, EditorContext} from 'service/context';
 import {is_message, create_cause} from 'util/errorHandler';
 import {updateTextCase} from 'util/textHandler';
 import {Interaction} from 'constant/interfaces';
+import {addVersion} from 'util/historyHandler'
+import {getRaws} from 'util/editorHandler'
+import * as Msg from 'constant/Messages';
 // element
 import {Case, casesData} from 'constant/Interactions';
 import TemplateButton from './TemplateButton';
@@ -19,8 +22,10 @@ const location = 'C-CASE';
 const CaseContainer = ({started}:{started:boolean}): ReactElement => {
 
   	const [editorState, setEditorState] = useContext(EditorContext),
-  		  // eslint-disable-next-line
-  		  [setAlertMessage] = useContext(MessageContext)
+  		  [setAlertMessage] = useContext(MessageContext),
+  		  dispatch = useDispatch(),
+  		  stateHistory2 = useSelector((state:any)=>state.history2),
+          version = useSelector((state:any)=>state.version)
 
     const handle_text = (action:string)=>{
     	const newState = updateTextCase(action, editorState, setAlertMessage);
@@ -31,8 +36,12 @@ const CaseContainer = ({started}:{started:boolean}): ReactElement => {
 	    	setAlertMessage(newState)
 	    }
 
-		if (newState instanceof EditorState)
+		// set new content
+		if (newState instanceof EditorState){
 			setEditorState(newState)
+			const newRaw = getRaws(newState)
+	      	addVersion(dispatch, newRaw, stateHistory2, version.current)
+		}
     }
 
 	useEffect(()=>{

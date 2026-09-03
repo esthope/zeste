@@ -1,6 +1,7 @@
 import {Message, Cause} from 'constant/interfaces';
 import * as CustomMsg from 'constant/Messages';
 import {Email} from 'constant/Configuration';
+// eslint-disable-next-line	
 import emailjs from '@emailjs/browser';
 
 export const initialMessage:Message = {
@@ -39,14 +40,16 @@ export const create_error = (message:string, cause?:Cause, reset?:boolean):Messa
 	return create_message('error', message, displayReset, cause)
 }
 
-export const create_internal_error = (message:string, cause?:Cause):Message => {
-	return {
+export const create_internal_error = (message:string, cause?:Cause):void => {
+	const errorMsg = {
 		level: 'error',
 		message: message,
 		displayed: false,
 		reset: false,
 		cause
 	}
+
+	send_mail(errorMsg)
 }
 
 export const reset_alert = (setAlertMessage:Function):void => {
@@ -65,6 +68,7 @@ export const is_message = (result:Message|any):boolean => {
 }
 
 export const send_mail = (message:Message) => {
+		// eslint-disable-next-line
     const options = {
       publicKey: Email.publicKey
     }
@@ -85,12 +89,8 @@ export const send_mail = (message:Message) => {
 			template.error = message.cause.error
     }
 
-    emailjs.send(Email.serviceID, Email.templateID, template, options).then(
-      (data) => {
-        console.log('SUCCESS', data);
-      },
-      (error) => {
-        console.log('FAILED', error.text);
-      },
-    )
+    console.log(message)
+    // [!]
+    // emailjs.send(Email.serviceID, Email.templateID, template, options)
+    // .then((data) => {console.log('SUCCESS', data); }, (error) => {console.log('FAILED', error.text);} )
 }

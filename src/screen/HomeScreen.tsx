@@ -1,55 +1,106 @@
 // main
-import {ReactElement, useEffect, useState, useRef, useCallback, useMemo} from "react";
-import {EditorState, Editor} from "draft-js";
-import {ErrorBoundary} from "react-error-boundary";
+import {ReactElement, useEffect, useState, useRef, useCallback, useMemo} from "react"
+import {useSelector, useDispatch} from 'react-redux'
+import {ErrorBoundary} from "react-error-boundary"
+import {EditorState, Editor} from "draft-js"
 // util
-import * as CustomMsg from 'constant/Messages';
-import {EditorContext, MessageContext} from 'service/context';
-import {getContentLength, updateTextCase, clipboardAction} from 'util/textHandler';
-import {initialMessage, get_boundary_error, create_error, create_cause, is_message} from "util/errorHandler";
-import {handle_press, getInteractionsKeys} from 'util/dataHandler';
-import {interactionsData, Case} from 'constant/Interactions';
-import {Message} from 'constant/interfaces';
+import * as Msg from 'constant/Messages'
+import {EditorContext, MessageContext} from 'service/context'
+import {getContentLength, updateTextCase, clipboardAction} from 'util/textHandler'
+import {getRaws, createContent} from 'util/editorHandler'
+import {initialMessage, get_boundary_error, create_error, create_cause, is_message} from "util/errorHandler"
+import {handle_press, getInteractionsKeys} from 'util/dataHandler'
+import {interactionsData, Case, Action} from 'constant/Interactions'
+import {addVersion} from 'util/historyHandler'
+import {changeColor} from 'service/buttonSlice'
+import {Message} from 'constant/interfaces'
 // element
-import {CaseError, ActionError, FieldError, EditorError} from 'component/ErrorComponents';
-import Header from 'component/Header';
-import CaseContainer from 'component/CaseContainer';
-import ReplaceField from 'component/ReplaceField';
-import TextEditor from 'component/TextEditor';
-import ActionContainer from 'component/ActionContainer';
-import AlertMessage from 'component/AlertMessage';
+import {CaseError, ActionError, FieldError, EditorError} from 'component/ErrorComponents'
+import Header from 'component/Header'
+import CaseContainer from 'component/CaseContainer'
+import ReplaceField from 'component/ReplaceField'
+import TextEditor from 'component/TextEditor'
+import ActionContainer from 'component/ActionContainer'
+import AlertMessage from 'component/AlertMessage'
+
+const location = 'S-HOME'
 
 const keys = getInteractionsKeys(interactionsData),
       cases = Object.values(Case);
 
 const Home = ():ReactElement => {
-  const [started, setStarted] = useState<boolean>(false),
+  const // states
         [contentLength, setContentLength] = useState<number>(0),
-        [alertMessage, setAlertMessage] = useState<Message>(initialMessage),
-        [editorState, setEditorState] = useState<EditorState>(EditorState.createEmpty());
+        [alertMessage, setAlertMessage] = useState<Message>(initialMessage), // [!] adapter avec redux
+        [editorState, setEditorState] = useState<EditorState>(EditorState.createEmpty()),
+        // refs
+        editorRef = useRef<Editor>(null),
+        started = useRef<boolean>(false), // [!] adapter avec redux
+        undo = useRef<boolean>(false),
+        // memo
+        editorValues = useMemo(()=>([editorState, setEditorState, editorRef]), [editorState]), // [!] adapter avec redux
+        messageValues = useMemo(()=>([setAlertMessage, alertMessage]), [alertMessage]),
+        // redux
+        stateHistory = useSelector((state:any)=>state.history2),
+        version = useSelector((state:any)=>state.version),
+        dispatch = useDispatch()
 
-  const editorRef = useRef<Editor>(null)
+  const checkNewState = (newState:any, action:string) => {
+    try
+    {
+      // getting new state failed
+      if (is_message(newState))
+        throw newState
 
-  const editorValues = useMemo(()=>([editorState, setEditorState, editorRef]), [editorState]),
-        messageValues = useMemo(()=>([setAlertMessage, alertMessage]), [alertMessage])
+      // set new content
+      if (newState instanceof EditorState) {
+        setEditorState(newState)
+        // [!] ne prend pas le style
+      }
 
-  const key_listener = useCallback(async (event:KeyboardEvent):Promise<void> => {
+      // [!] addVersion(dispatch, editorRef, newText)
+
+      // [!] button color
+      dispatch(changeColor(`${action} success-color-btn`))
+    }
+    catch(err:any)
+    {
+      console.log('check')
+      const cause = create_cause('CHECK', location, err),
+            errorMsg = (is_message(err)) ? err : create_error(Msg.ACTION_FAILED, cause)
+
+      dispatch(changeColor(action + ` ${err?.level ?? 'error'}-color-btn`))
+      setAlertMessage(errorMsg)
+    }
+  }
+
+  /**
+   * Listen the key shortcut for the editor functionalities
+   * Filter the keys and determination of the action or new case requested
+   * Update the editor and the history with the new content
+   * @param  {KeyboardEvent} event the current key event
+   */
+  const key_listener = useCallback(async (event:KeyboardEvent):Promise<void> =>
+  {
     if (event.key === 'Control' || !event.ctrlKey || !editorRef?.current) return;
 
-    let newState:any = null;
+    let newText:string|undefined = undefined,
+        newState:any = null
+
     // ? editorHasFocus
     const hasFocus = editorRef.current.editor === document.activeElement,
           interID = handle_press(event, keys, interactionsData, hasFocus),
-          askedInter = (typeof interID === 'string') ? interID : '';
+          askedInter = (typeof interID === 'string') ? interID : '',
+          caseInteraction = cases.includes(askedInter);
 
     try
     {
-      // getting the interaction ID failed
+      // failure during getting the interaction ID
       if (is_message(interID))
         throw interID
 
       // the interaction is a Case
-      if (cases.includes(askedInter))
+      if (caseInteraction)
       {
         event.preventDefault();
         newState = updateTextCase(askedInter, editorState, setAlertMessage)
@@ -58,24 +109,25 @@ const Home = ():ReactElement => {
       else if (askedInter)
       {
         // no prevent default is needed for action
-        newState = await clipboardAction(askedInter, editorRef)
+        if (askedInter === Action.undo) {
+          undo.current = true
+        }
+        newState = await clipboardAction(askedInter, editorRef, dispatch)
       }
 
-      // getting new state failed
-      if (is_message(newState))
-        throw newState
-
-      if (newState instanceof EditorState)
-        setEditorState(newState)
+      checkNewState(newState, askedInter)
     }
     catch(err:any)
     {
-      const cause = create_cause('INTERACTION', 'S-HOME', err),
-            errorMsg = (is_message(err)) ? err : create_error(CustomMsg.TEXT_UP, cause)
+      console.log('listner')
+      const cause = create_cause('INTERACTION', location, err),
+            errorMsg = (is_message(err)) ? err : create_error(Msg.TEXT_UP, cause)
 
+      // [!] button color
       setAlertMessage(errorMsg)
+      dispatch(changeColor(`${askedInter} ${err?.level ?? 'error'}-color-btn`))
     }
-  }, [editorState])
+  }, [editorState, dispatch])
 
   const display_error = (error:Error):void => {
     const errorMsg = get_boundary_error(error);
@@ -89,17 +141,31 @@ const Home = ():ReactElement => {
     setContentLength(length);
 
     // the edition has started
-    if (length > 0 && !started) {
-      setStarted(true)
+    if (length > 0 && !started.current) {
+      started.current = true
     }
 
     document.addEventListener('keydown', key_listener)
     return () => document.removeEventListener('keydown', key_listener)
-  }, [editorState, started, key_listener])
+  }, [editorState, key_listener])
+
+  useEffect(()=>{
+    console.log(version.current)
+    console.log(stateHistory)
+    if (!undo.current) return // ici
+
+    const newRaw = stateHistory[version.current]
+    console.log(newRaw)
+    setEditorState(createContent(newRaw))
+
+    // checkNewState(newState, Action.undo)
+
+    undo.current = false
+  }, [version])
 
   return (
     <>
-      <Header started={started} />
+      <Header started={started.current} />
       <MessageContext.Provider value={messageValues}>
         <main className="flex column">
           <EditorContext.Provider value={editorValues}>
@@ -107,7 +173,7 @@ const Home = ():ReactElement => {
             <section id="case-section" className="gap-5 flex-between align-start self-center">
               {/*CASES*/}
               <ErrorBoundary FallbackComponent={CaseError} onError={display_error} >
-                <CaseContainer started={started} />
+                <CaseContainer started={started.current} />
               </ErrorBoundary>
 
               {/*REPLACE*/}
@@ -124,7 +190,7 @@ const Home = ():ReactElement => {
 
               {/*ACTIONS*/}
               <ErrorBoundary FallbackComponent={ActionError} onError={display_error} >
-                <ActionContainer started={started} />
+                <ActionContainer started={started.current} undo={undo} />
               </ErrorBoundary>
             </section>
 

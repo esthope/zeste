@@ -96,7 +96,7 @@ const AlertMessage = ():ReactElement => {
 			clearInterval(intervaRef.current)
 		}
 	// eslint-disable-next-line
-	}, [hidingDelay, intervaRef.current, keep])
+	}, [hidingDelay, keep])
 
 	/**
 	 * reset hiding delay of the alert when a new message is set
@@ -113,6 +113,7 @@ const AlertMessage = ():ReactElement => {
 		if (cause) {
 			send_mail(alertMessage)
 		}
+	// eslint-disable-next-line
 	}, [message, level, cause])
 
 	return (

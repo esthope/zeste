@@ -1,6 +1,10 @@
 // main
-import {ReactElement, useState, useEffect, useContext} from "react";
-import {RichUtils, Editor, EditorState, Modifier, SelectionState} from 'draft-js';
+import {RichUtils, Editor, EditorState, Modifier, SelectionState, getDefaultKeyBinding} from 'draft-js';
+import * as reactTypes from 'react'
+import {useState, useEffect, useContext} from "react";
+import {addVersion} from 'util/historyHandler'
+import {getRaws} from 'util/editorHandler'
+import {useSelector, useDispatch} from 'react-redux'
 import "draft-js/dist/Draft.css";
 // util
 import {EditorContext, MessageContext} from 'service/context';
@@ -16,17 +20,31 @@ import {Message, Cause} from 'constant/interfaces';
 let errorMsg:Message,
     cause:Cause;
 
-const colors:any = style;
+const colors:any = style,
+      wordReg = new RegExp('(?:(?! ).)+ $'), //'/(?:(?! ).)+ $/'
+      commands = ['split-block', 'backspace-word'],
+      lastCharacter = ''
 
-const TextEditor = ({contentLength}:{contentLength:number}): ReactElement => {
+const TextEditor = ({contentLength}:{contentLength:number}): reactTypes.ReactElement => {
 
   const [selectionClass, setSelectionClass] = useState<string>(''),
         [selectCount, setSelectCount] = useState<number>(0),
         [selectMode, setSelectMode] = useState<boolean>(false)
 
-  const 
-        [editorState, setEditorState, editorRef] = useContext(EditorContext),
+  const [editorState, setEditorState, editorRef] = useContext(EditorContext),
         [setAlertMessage] = useContext(MessageContext)
+
+  const dispatch = useDispatch(),
+        stateHistory2 = useSelector((state:any)=>state.history2),
+        version = useSelector((state:any)=>state.version)
+
+  const customKeyBinding = (event:reactTypes.KeyboardEvent):string|null => {
+    const commandEvent = getDefaultKeyBinding(event);
+    if (commandEvent === 'undo') {
+      return 'handled';
+    }
+    return commandEvent
+  }
 
   /**
    * Listen the delete command of DraftJS to cancel it 
@@ -34,17 +52,38 @@ const TextEditor = ({contentLength}:{contentLength:number}): ReactElement => {
    * @param  {string}       command     The command name 
    * @param  {EditorState}  editorState The current state of the editor content
    */
-  const onPreventDelete = (command:string, editorState:EditorState):any => {
+  const onPreventCommand = (command:string, editorState:EditorState):any => {
+    console.log('command', command)
     const event = window.event;
 
-    if ((command === 'delete' || command === 'split-block') &&
-        (event instanceof KeyboardEvent
-        && event?.ctrlKey
-      )) {
+    // add sentence to history
+    if (commands.includes(command))
+    {
+      // [!] a l'état en retarf
+      const newRaw = getRaws(editorState)
+      addVersion(dispatch, newRaw, stateHistory2, version.current)
+    }
+
+    if (command === 'delete' &&
+        (event instanceof KeyboardEvent && event?.ctrlKey )) {
       return 'handled'
     }
   }
 
+  const handleHistory = (editorState:EditorState, force:boolean=false):void => {
+    const currentText = editorState.getCurrentContent().getPlainText()
+
+    // [!] pas efficace si on reprend du milieu 
+    // si c'est espace
+    // si groupe de plusiuers charactères
+    // si ctrl v
+    if (force || wordReg.test(currentText)) {
+      console.log('HIST')
+      const newRaw = getRaws(editorState)
+      addVersion(dispatch, newRaw, stateHistory2, version.current) // ici
+    }
+  }
+  
   /**
    * Switch the multi selection mode
    * Save the current selection as highlight text into the editor state
@@ -106,6 +145,10 @@ const TextEditor = ({contentLength}:{contentLength:number}): ReactElement => {
    * @param  {EditorState}  editorState The current state of the editor content
    */
   const onChange = (editorState:EditorState):any => {
+
+    // add each word to history
+    handleHistory(editorState)
+
     // update text state
     setEditorState(editorState)
 
@@ -150,12 +193,15 @@ const TextEditor = ({contentLength}:{contentLength:number}): ReactElement => {
         onKeyUp={(event:any):void => {handleSelection(event, editorState)}}
       >
 
+        {/* @ts-ignore*/}
         <Editor
         ref={editorRef}
+        customStyleMap={{ HIGHLIGHT: { backgroundColor: colors.ocher } }}
+        onBlur={()=>handleHistory(editorState, true)}
+        handleKeyCommand={onPreventCommand}
+        keyBindingFn={customKeyBinding}
         placeholder="Inscrire le texte"
         editorState={editorState}
-        handleKeyCommand={onPreventDelete}
-        customStyleMap={{ HIGHLIGHT: { backgroundColor: colors.ocher } }}
         onChange={onChange} />
       </div>
     </>

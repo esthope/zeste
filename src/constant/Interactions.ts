@@ -1,5 +1,5 @@
 import {fetchData, createKeyEntries} from 'util/dataHandler';
-import {create_internal_error, create_cause, send_mail} from 'util/errorHandler';
+import {create_internal_error, create_cause} from 'util/errorHandler';
 import {EMPTY_DATA} from 'constant/Messages';
 
 let casesData:any[] = [],
@@ -24,9 +24,8 @@ try
 }
 catch(err:any)
 {
-	const cause = create_cause('DATA', 'CS-INTERACTION', err),
-		  errorMsg = create_internal_error(EMPTY_DATA, cause)
-	send_mail(errorMsg)
+	const cause = create_cause('DATA', 'CS-INTERACTION', err)
+	create_internal_error(EMPTY_DATA, cause)
 }
 
 export {casesData, actionsData, interactionsData, Action, Case, Mode}

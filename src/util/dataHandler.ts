@@ -2,7 +2,7 @@ import {StringIndex, Interaction} from 'constant/interfaces';
 import interactionData from 'service/data_interaction.json';
 // alert
 import * as Msg from 'constant/Messages';
-import {create_error, create_internal_error, create_cause, send_mail} from 'util/errorHandler';
+import {create_error, create_internal_error, create_cause} from 'util/errorHandler';
 import {Message, Cause} from 'constant/interfaces';
 
 let cause:Cause,
@@ -29,8 +29,7 @@ export const fetchData = (slice?:string):Interaction|any => {
 	catch(err:any)
 	{
 		cause = create_cause('DATA', location, err)
-		errorMsg = create_internal_error(Msg.EMPTY_DATA, cause)
-		send_mail(errorMsg)
+		create_internal_error(Msg.EMPTY_DATA, cause)
 		return [];
 	}
 }

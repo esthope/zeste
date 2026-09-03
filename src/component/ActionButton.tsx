@@ -1,24 +1,27 @@
 // main
 import {ReactElement} from "react";
 import {useState, useEffect} from 'react';
+import {Action} from 'constant/Interactions'
+import {useSelector} from 'react-redux'
 
 // element
-import CopyIcon from 'component/icons/CopyIcon';
+import CpyIcon from 'component/icons/CpyIcon';
 import CircleIcon from 'component/icons/CircleIcon';
 import CutIcon from 'component/icons/CutIcon';
-import PastIcon from 'component/icons/PastIcon';
-import ResetIcon from 'component/icons/ResetIcon';
+import PstIcon from 'component/icons/PstIcon';
+import RstIcon from 'component/icons/RstIcon';
+import UdoIcon from 'component/icons/UdoIcon';
 
 interface ActionProp {
-	entry:string,
+	actionID:string,
 	label?:string,
 	onMouseEnter?:Function,
-	statut?:String,
 	onClick?:Function
 }
 
-const ActionButton = ({entry, label, onMouseEnter, statut, onClick}:ActionProp):ReactElement => {
-	const [IconPath, setIconPath] = useState<any>(CircleIcon);
+const ActionButton = ({actionID, label, onMouseEnter, onClick}:ActionProp):ReactElement => {
+	const [IconPath, setIconPath] = useState<any>(CircleIcon),
+		  stateColor = useSelector((state:any)=>state.button)
 
 	let buttonProp:object = {},
 		imageProp:object = {};
@@ -28,33 +31,37 @@ const ActionButton = ({entry, label, onMouseEnter, statut, onClick}:ActionProp):
 
 	// get the button icon
 	useEffect(()=>{
-		switch (entry) {
-			case 'copy':
-				setIconPath(CopyIcon)
+		switch (actionID) {
+			case Action.copy:
+				setIconPath(CpyIcon)
 			break;
-			case 'cut':
+			case Action.cut:
 				setIconPath(CutIcon)
 			break;
-			case 'past':
-				setIconPath(PastIcon)
+			case Action.past:
+				setIconPath(PstIcon)
 			break;
-			case 'reset':
-				setIconPath(ResetIcon)
+			case Action.reset:
+				setIconPath(RstIcon)
+			break;
+			case Action.undo:
+				setIconPath(UdoIcon)
 			break;
 			default:
 				setIconPath(CircleIcon)
 		}
-	}, [entry])
+	}, [actionID])
 
 	return (
 		<button
+			id={`${actionID}-btn`}
 			type="button"
-			className={`${statut?.includes(entry) ? statut.split(' ').pop() : ''} actionButton mbe-06 flex-center column no-bg no-border`}
+			className={`${stateColor?.includes(actionID) ? stateColor.split(' ').pop() : ''} actionButton mbe-06 flex-center column no-bg no-border`}
 			{...buttonProp}
 		>
 			<IconPath
 				stroke='currentColor'
-				fill={(entry === 'reset' || entry === 'copy') ? 'currentColor' : 'transparent'}
+				fill={(actionID === Action.reset || actionID === Action.copy || actionID === Action.undo) ? 'currentColor' : 'transparent'}
 				{...imageProp}
 				/>
 	    </button>

@@ -26,15 +26,15 @@ const CaseError = ({error, resetErrorBoundary}:FallbackProps):ReactNode => {
 }
 
 const ActionError = ({error, resetErrorBoundary}:FallbackProps):ReactNode => {
-	const icons = ['copy', 'past', 'cut', 'reset']
-	const keys = ['C', 'V', 'X', 'Q']
+	const icons = ['cpy', 'pst', 'cut', 'rst', 'udo']
+	const keys = ['C', 'V', 'X', 'Q', 'Z']
 	return (
 		<div className="actionContainer flex">
 			{
 				icons.map((icon, index)=>
 				<div key={`errButton-${index}`} className="no-pointer">
 					<ActionButton
-						entry={`${icon}_err`}
+						actionID={`${icon}_err`}
 						label={icon}
 						/>
 					<label className='block text-center'>ctrl · {keys[index]}</label>
