@@ -6,7 +6,7 @@
     align-items: center;
     flex-wrap: nowrap;
 
-    p {text-align: left}
+    p {text-align: justify}
 
     span {
       font-size: 1.2em;
@@ -42,11 +42,11 @@
 
 @media only screen and (min-width: 500px) {
   #message-container {
-    gap: 1rem;
+    gap: 3rem;
 
     p {
       order: initial;
-      max-width: 25rem;
+      max-width: 35rem;
     }
   }
 

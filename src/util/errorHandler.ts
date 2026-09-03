@@ -55,9 +55,9 @@ export const reset_alert = (setAlertMessage:Function):void => {
 
 export const get_boundary_error = (error:Error):Message => {
 	const message = (error?.cause?.hasOwnProperty('fonite')) ? `${error.message}. ${CustomMsg.REF_IF_PERSIST}.` : `${CustomMsg.TECH_ERR}. ${CustomMsg.REFRESH}.`,
-		  cause:any = error?.cause;
+		  	cause:any = error?.cause;
 
-    return create_error(message, cause, true);
+  return create_error(message, cause, true);
 }
 
 export const is_message = (result:Message|any):boolean => {
@@ -71,18 +71,18 @@ export const send_mail = (message:Message) => {
 
     const template = {
     	level: message.level,
-		message: message.message,
-		displayed: (!!message.displayed) ? 'Utilisateur averti' : 'Message caché',
-		fonite: 'Fonité inconnue',
-		location: 'Fichier inconnu',
-		error: 'Aucun détail transmis'
+			message: message.message,
+			displayed: (!!message.displayed) ? 'Utilisateur averti' : 'Message caché',
+			fonite: 'Fonité inconnue',
+			location: 'Fichier inconnu',
+			error: 'Aucun détail transmis'
     }
 
     if (message?.cause)
     {
     	template.fonite = message.cause.fonite
-		template.location = message.cause.location
-		template.error = message.cause.error
+			template.location = message.cause.location
+			template.error = message.cause.error
     }
 
     emailjs.send(Email.serviceID, Email.templateID, template, options).then(
