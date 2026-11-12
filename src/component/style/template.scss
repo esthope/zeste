@@ -15,9 +15,7 @@
 
 	.error-message {
 		padding-right: 1rem;
-		div {
-			background-color: rgba(18, 34, 32, .7);
-			border-radius: 2px;
+		> div {
 			padding: 1rem;
 		}
 	}

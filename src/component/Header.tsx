@@ -35,28 +35,22 @@ const Header = ({started}:{started:boolean}):ReactElement => {
 		<header className="mb-5">
 			<div id="header-content" className="flex fit-content"
 			{...( !isMobile && started && displayed
-				? {
-					onMouseEnter: ()=>{keepRef.current = true},
-					onMouseLeave: ()=>{trigger_hiding_intro()}
-				} : {}
+				? {onMouseEnter: ()=>{keepRef.current = true},
+					 onMouseLeave: ()=>{trigger_hiding_intro()}} 
+				: {}
 			)}>
-	      		<img src={convert_logo}
-	      		className="ml-3 pointer"
-	      		alt={`Logo du site ${SITE_NAME}`}
-	      		{...( !isMobile && started
-					? {
-						onMouseEnter: ()=>{setDisplayed(true)},
-					} : {}
-				)}
-	      		/>
-
-	      		<h1 className="mobile-title">{SITE_NAME}</h1>
-	      		<div className={`intro fade-element left ${(displayed) ? 'fade-animation':''}`}
-	      		>
-	      			<h1 className="mb-1 desktop-title">{SITE_NAME}</h1>
-		      		<p><b>Bienvenue sur {SITE_NAME}</b>, cet outil est un convertisseur de majuscules et de minuscules <b>– la casse –</b> du texte, et permet de remplacer plusieurs lettres par d'autres en un seul coup.</p>
-		      		<p>Remplacer en masse le texte souhaité grâce à la sélection multiple. La sélection sera bleue en <span className="normal">sélection normale</span> et ocre en <span className="multi">sélection multiple</span> !</p>
-		      	</div>
+	      <img src={convert_logo} className="ml-3 pointer" alt={`Logo du site ${SITE_NAME}`}
+	      {...( !isMobile && started
+					? {onMouseEnter: ()=>{setDisplayed(true)}} 
+					: {}
+				)}/>
+    		
+    		<span className="fake-title mobile-title">{SITE_NAME}</span>
+    		<div className={`intro fade-element left ${(displayed) ? 'fade-animation':''}`}>
+    			<span className="fake-title desktop-title mb-1">{SITE_NAME}</span>
+      		<p><b>Bienvenue sur {SITE_NAME}</b>, cet outil est un <h1>convertisseur de texte, de majuscule et de minuscule</h1> <b>– la casse –</b>, et permet de remplacer plusieurs lettres par d'autres en un seul coup.</p>
+      		<p>Remplacer en masse le texte souhaité grâce à la sélection multiple. La sélection sera bleue en <span className="normal">sélection normale</span> et ocre en <span className="multi">sélection multiple</span> !</p>
+      	</div>
 			</div>
 		</header>
 	)
