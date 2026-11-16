@@ -56,7 +56,8 @@ const CaseContainer = ({started}:{started:boolean}): ReactElement => {
 					is_mobile={isMobile} >
 						<CaseButton
 						content={(item.data_id === Case.inversion) ? InverseLabel : item.title}
-						onClick={() => handle_text(item.data_id)} />
+						onClick={() => handle_text(item.data_id)} 
+						label={item.label} />
 				</TemplateButton>
 			  	: null
 				))

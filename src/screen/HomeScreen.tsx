@@ -1,23 +1,23 @@
 // main
-import {ReactElement, useEffect, useState, useRef, useCallback, useMemo} from "react";
-import {EditorState, Editor} from "draft-js";
-import {ErrorBoundary} from "react-error-boundary";
+import {ReactElement, useEffect, useState, useRef, useCallback, useMemo} from "react"
+import {ErrorBoundary} from "react-error-boundary"
+import {EditorState, Editor} from "draft-js"
 // util
-import * as CustomMsg from 'constant/Messages';
-import {EditorContext, MessageContext} from 'service/context';
-import {getContentLength, updateTextCase, clipboardAction} from 'util/textHandler';
-import {initialMessage, get_boundary_error, create_error, create_cause, is_message} from "util/errorHandler";
-import {handle_press, getInteractionsKeys} from 'util/dataHandler';
-import {interactionsData, Case} from 'constant/Interactions';
-import {Message} from 'constant/interfaces';
+import {initialMessage, get_boundary_error, create_error, create_cause, is_message} from "util/errorHandler"
+import {getContentLength, updateTextCase, clipboardAction} from 'util/textHandler'
+import {handle_press, getInteractionsKeys} from 'util/dataHandler'
+import {EditorContext, MessageContext} from 'service/context'
+import {interactionsData, Case} from 'constant/Interactions'
+import * as CustomMsg from 'constant/Messages'
+import {Message} from 'constant/interfaces'
 // element
-import {CaseError, ActionError, FieldError, EditorError} from 'component/ErrorComponents';
-import Header from 'component/Header';
-import CaseContainer from 'component/CaseContainer';
-import ReplaceField from 'component/ReplaceField';
-import TextEditor from 'component/TextEditor';
-import ActionContainer from 'component/ActionContainer';
-import AlertMessage from 'component/AlertMessage';
+import {CaseError, ActionError, FieldError, EditorError} from 'component/ErrorComponents'
+import ActionContainer from 'component/ActionContainer'
+import CaseContainer from 'component/CaseContainer'
+import AlertMessage from 'component/AlertMessage'
+import ReplaceField from 'component/ReplaceField'
+import TextEditor from 'component/TextEditor'
+import Header from 'component/Header'
 
 const keys = getInteractionsKeys(interactionsData),
       cases = Object.values(Case);

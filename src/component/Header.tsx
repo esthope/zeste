@@ -1,7 +1,7 @@
 import {ReactElement, useEffect, useState, useRef, memo} from "react";
 import {isMobile} from 'react-device-detect';
 import convert_logo from 'assets/zeste.svg';
-import {SITE_NAME} from "constant/Configuration"
+import {SITE_NAME, LABEL} from "constant/Configuration"
 
 const Header = ({started}:{started:boolean}):ReactElement => {
 
@@ -39,7 +39,7 @@ const Header = ({started}:{started:boolean}):ReactElement => {
 					 onMouseLeave: ()=>{trigger_hiding_intro()}} 
 				: {}
 			)}>
-	      <img src={convert_logo} className="ml-3 pointer" alt={`Logo du site ${SITE_NAME}`}
+	      <img src={convert_logo} className="ml-3 pointer" alt={SITE_NAME} aria-label={`${SITE_NAME} - ${LABEL}`}
 	      {...( !isMobile && started
 					? {onMouseEnter: ()=>{setDisplayed(true)}} 
 					: {}

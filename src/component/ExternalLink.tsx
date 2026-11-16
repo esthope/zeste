@@ -6,7 +6,7 @@ const ExternalLink = ({text, image, link, title}:Link):ReactElement => {
 		<div className="link flex-center column gap-05">
 			<p>{text}</p> 
 			<img src={image} alt={title}/>
-			<a href={link} target="_blank" rel="noreferrer" className="rozhaone-font">{title}</a>
+			<a href={link} target="_blank" rel="noreferrer" className="rozhaone-font" alt={`${title} - ${text}`}>{title}</a>
 		</div>
 	)
 }

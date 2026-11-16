@@ -12,7 +12,7 @@ const NotFound = ():ReactElement => {
 	return (
 		<>
 		<header id="header-content" className="ml-3 index-1 flex"> 
-    	<img src={orangeIcon} alt="Logo du site en erreur" />
+    	<img src={orangeIcon} alt="" />
 
     	<div className="bg-transparent">
     		<span className="fake-title block">{ConfigText.SITE_NAME}</span>
@@ -21,11 +21,11 @@ const NotFound = ():ReactElement => {
 		</header>
 
     <main id="error-page" className="m-0 flex no-overflow">
-    	<img src={convertIcon} alt="Logo alerte avertissement" />
-    	<img src={warnIcon} alt="Logo du site Zeste" />
+    	<img src={convertIcon} alt="" />
+    	<img src={warnIcon} alt="" />
 
     	<div className="error-message flex no-wrap">
-				<img src={errorIcon} alt="Logo erreur" />
+				<img src={errorIcon} alt="" />
 
 				<div className="bg-transparent self-center index-1">
 					<div className="rozhaone-font flex align-center justify-end reverse p-0 mb-1">

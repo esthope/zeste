@@ -5,7 +5,7 @@ const InverseLabel = ():ReactElement => {
     return (
       <div id="inversionLabel" className="flex-center">
         <span>A</span>
-        <img src={inversionArrows} className="" alt="arrows" />
+        <img src={inversionArrows} alt="" />
         <span>a</span>
       </div>
     )

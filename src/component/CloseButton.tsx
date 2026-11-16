@@ -10,12 +10,12 @@ interface ButtonProp {
 const TextButton = ({onClick, text, logo, color}:ButtonProp):ReactElement => {
 	return (
 		<button
-			type="button"
 			className={`textButton no-border no-bg inline mr-2`}
-			onClick={onClick} >
+			aria-label="Fermer le message"
+			onClick={onClick}>
 			{text} {color}
-			<img src={logo} alt="Fermer"/>
-	    </button>
+			<img src={logo} alt=""/>
+	  </button>
 	)
 }
 
