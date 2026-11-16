@@ -1,7 +1,7 @@
 import {ReactElement, useEffect, useState, useRef, memo} from "react";
 import {isMobile} from 'react-device-detect';
 import convert_logo from 'assets/zeste.svg';
-import {SITE_NAME, LABEL} from "constant/Configuration"
+import {SITE_NAME, LABEL, LABEL_SHORT} from "constant/Configuration"
 
 const Header = ({started}:{started:boolean}):ReactElement => {
 
@@ -20,6 +20,13 @@ const Header = ({started}:{started:boolean}):ReactElement => {
 			if (!keepRef.current) {setDisplayed(false)}
 		}, 15000)
 	}
+
+	const DescriptionText = ({device, hidden}:{device:string, hidden:boolean}) =>( 
+			<div className={`intro ${device}-content`} aria-hidden={hidden}>
+				<p><b>Bienvenue sur {SITE_NAME}</b>, cet outil est un convertisseur de texte, de majuscule et de minuscule <b>– la casse –</b>, et permet de remplacer plusieurs lettres par d'autres en un seul coup.</p>
+				<p>Remplacer en masse le texte souhaité grâce à la sélection multiple. La sélection sera bleue en <span className="normal">sélection normale</span> et ocre en <span className="multi">sélection multiple</span> !</p>
+			</div>
+	)
 
 	/**
 	 * Hide the introductionafter when the user started writing
@@ -45,12 +52,16 @@ const Header = ({started}:{started:boolean}):ReactElement => {
 					: {}
 				)}/>
     		
-    		<span className="fake-title mobile-title">{SITE_NAME}</span>
-    		<div className={`intro fade-element left ${(displayed) ? 'fade-animation':''}`}>
-    			<span className="fake-title desktop-title mb-1">{SITE_NAME}</span>
-      		<p><b>Bienvenue sur {SITE_NAME}</b>, cet outil est un <h1>convertisseur de texte, de majuscule et de minuscule</h1> <b>– la casse –</b>, et permet de remplacer plusieurs lettres par d'autres en un seul coup.</p>
-      		<p>Remplacer en masse le texte souhaité grâce à la sélection multiple. La sélection sera bleue en <span className="normal">sélection normale</span> et ocre en <span className="multi">sélection multiple</span> !</p>
+    		<div className={`fade-element left gap-2 ${(displayed) ? 'fade-animation':''}`}>
+					<div className="flex column">
+						<span className="fake-title">{SITE_NAME}</span>
+	    			<h1 className="capitalize">{LABEL_SHORT}</h1>
+	    		</div>
+
+      		<DescriptionText device="desktop" hidden={isMobile} />
       	</div>
+
+      	<DescriptionText device="mobile" hidden={!isMobile} />
 			</div>
 		</header>
 	)

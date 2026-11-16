@@ -3,6 +3,7 @@ import githubLogo from 'assets/github.svg'
 import kofiLogo from 'assets/kofi.svg'
 
 const LABEL = "convertisseur de casse, majuscule et minuscule, remplacement en masse de texte"
+const LABEL_SHORT = "convertisseur de texte, de majuscule et de minuscule"
 const TITLE = "convertisseur de texte, de majuscule et de minuscule"
 const SITE_NAME_LONG = "Zeste-convert"
 const SITE_NAME = "Zeste"
@@ -34,4 +35,4 @@ const Email = {
 	publicKey: 'SzgJIs_mogwx8X71E'
 }
 
-export {SITE_NAME, LABEL, TITLE, SITE_NAME_LONG, Links, Email}
+export {SITE_NAME, LABEL, TITLE, SITE_NAME_LONG, LABEL_SHORT, Links, Email}

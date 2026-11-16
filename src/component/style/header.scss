@@ -28,12 +28,13 @@
 /*---------phones--------------------------------------*/
 @media only screen and (min-width: 1px)
 {
-	.desktop-title {display: none}
+	.desktop-content {display: none}
 
 	#header-content {
 		img {margin-right: 1rem}
 		p {text-align: justify}
 		span, b {font-size: 1.1em}
+		h1 {max-width: 190px}
 	}
 }
 
@@ -45,13 +46,14 @@
 /*---------tablets & after-----------------------------*/
 @media only screen and (min-width: 768px)
 {
-	.desktop-title {display: initial}
-	.mobile-title {display: none}
+	.desktop-content {display: initial}
+	.mobile-content {display: none}
 
 	#header-content {
 		flex-wrap: nowrap;
 		img {margin-right: 3rem}
 		p {text-align: initial}
+		h1 {max-width: initial}
 	}
 }
 
@@ -59,5 +61,6 @@
 	#header-content {
 		padding-top: 3rem;
 		p {margin: 0}
+		h1 {margin-bottom: 1em}
 	}
 }

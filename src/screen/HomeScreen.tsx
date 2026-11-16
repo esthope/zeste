@@ -34,7 +34,7 @@ const Home = ():ReactElement => {
         messageValues = useMemo(()=>([setAlertMessage, alertMessage]), [alertMessage])
 
   const key_listener = useCallback(async (event:KeyboardEvent):Promise<void> => {
-    if (event.key === 'Control' || !event.ctrlKey || !editorRef?.current) return;
+    if (event.key === 'Control' || !event.ctrlKey || !editorRef?.current || document.activeElement.id === "replaceField") return;
 
     let newState:any = null;
     // ? editorHasFocus
