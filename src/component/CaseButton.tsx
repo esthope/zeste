@@ -3,6 +3,7 @@ import {ReactElement} from "react";
 interface CaseProp {
 	content?:string|Function,
 	onClick?:Function,
+	label?:string,
 	onMouseEnter?:Function,
 	disabled?:boolean,
 	className?:string
