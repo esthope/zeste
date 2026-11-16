@@ -34,11 +34,11 @@ const Home = ():ReactElement => {
         messageValues = useMemo(()=>([setAlertMessage, alertMessage]), [alertMessage])
 
   const key_listener = useCallback(async (event:KeyboardEvent):Promise<void> => {
-    if (event.key === 'Control' || !event.ctrlKey || !editorRef?.current || document.activeElement.id === "replaceField") return;
+    if (event.key === 'Control' || !event.ctrlKey || !editorRef?.current || document?.activeElement?.id === "replaceField") return;
 
     let newState:any = null;
     // ? editorHasFocus
-    const hasFocus = editorRef.current.editor === document.activeElement,
+    const hasFocus = editorRef.current.editor === document?.activeElement,
           interID = handle_press(event, keys, interactionsData, hasFocus),
           askedInter = (typeof interID === 'string') ? interID : '';
 

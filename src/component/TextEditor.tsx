@@ -1,6 +1,6 @@
 // main
-import {ReactElement, useState, useEffect, useContext} from "react";
-import {RichUtils, Editor, EditorState, Modifier, SelectionState} from 'draft-js';
+import React, {ReactElement, useState, useEffect, useContext} from "react";
+import {RichUtils, Editor as DraftEditor, EditorProps, EditorState, Modifier, SelectionState} from 'draft-js';
 import "draft-js/dist/Draft.css";
 // util
 import {EditorContext, MessageContext} from 'service/context';
@@ -17,6 +17,10 @@ let errorMsg:Message,
     cause:Cause;
 
 const colors:any = style;
+
+const Editor = DraftEditor as unknown as React.ComponentType<
+  EditorProps & React.RefAttributes<DraftEditor>
+>
 
 const TextEditor = ({contentLength}:{contentLength:number}): ReactElement => {
 
