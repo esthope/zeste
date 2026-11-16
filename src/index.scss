@@ -49,6 +49,8 @@ h1 {
 button {cursor: pointer}
 p {margin: 0}
 
+header.noscript {margin: 3em}
+
 /*---------phones--------------------------------------*/
 @media only screen and (min-width: 1px) {
   main, header .intro {margin: 0 1rem 0 1rem}
