@@ -18,9 +18,7 @@ let errorMsg:Message,
 
 const colors:any = style;
 
-const Editor = DraftEditor as unknown as React.ComponentType<
-  EditorProps & React.RefAttributes<DraftEditor>
->
+const Editor = DraftEditor as unknown as React.ComponentType< EditorProps & React.RefAttributes<DraftEditor> >
 
 const TextEditor = ({contentLength}:{contentLength:number}): ReactElement => {
 
