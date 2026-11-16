@@ -10,7 +10,6 @@ import close_icon from 'assets/close.svg'
 // element
 import {REFRESH_PAGE} from 'constant/Messages'
 import {Message} from 'constant/interfaces'
-import {LABEL} from 'constant/Configuration'
 
 const AlertMessage = ():ReactElement => {
 
