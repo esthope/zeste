@@ -1,7 +1,7 @@
 import {ReactElement, useEffect, useState, useRef, memo} from "react";
 import {isMobile} from 'react-device-detect';
 import convert_logo from 'assets/zeste.svg';
-import {SITE_NAME} from "constant/Configuration"
+import {SITE_NAME, LABEL, LABEL_SHORT} from "constant/Configuration"
 
 const Header = ({started}:{started:boolean}):ReactElement => {
 
@@ -21,6 +21,13 @@ const Header = ({started}:{started:boolean}):ReactElement => {
 		}, 15000)
 	}
 
+	const DescriptionText = ({device, hidden}:{device:string, hidden:boolean}) =>( 
+			<div className={`intro ${device}-content`} aria-hidden={hidden}>
+				<p><b>Bienvenue sur {SITE_NAME}</b>, cet outil est un convertisseur de texte, de majuscule et de minuscule <b>– la casse –</b>, et permet de remplacer plusieurs lettres par d'autres en un seul coup.</p>
+				<p>Remplacer en masse le texte souhaité grâce à la sélection multiple. La sélection sera bleue en <span className="normal">sélection normale</span> et ocre en <span className="multi">sélection multiple</span> !</p>
+			</div>
+	)
+
 	/**
 	 * Hide the introductionafter when the user started writing
 	 */
@@ -35,28 +42,26 @@ const Header = ({started}:{started:boolean}):ReactElement => {
 		<header className="mb-5">
 			<div id="header-content" className="flex fit-content"
 			{...( !isMobile && started && displayed
-				? {
-					onMouseEnter: ()=>{keepRef.current = true},
-					onMouseLeave: ()=>{trigger_hiding_intro()}
-				} : {}
+				? {onMouseEnter: ()=>{keepRef.current = true},
+					 onMouseLeave: ()=>{trigger_hiding_intro()}} 
+				: {}
 			)}>
-	      		<img src={convert_logo}
-	      		className="ml-3 pointer"
-	      		alt={`Logo du site ${SITE_NAME}`}
-	      		{...( !isMobile && started
-					? {
-						onMouseEnter: ()=>{setDisplayed(true)},
-					} : {}
-				)}
-	      		/>
+	      <img src={convert_logo} className="ml-3 pointer" alt={SITE_NAME} aria-label={`${SITE_NAME} - ${LABEL}`}
+	      {...( !isMobile && started
+					? {onMouseEnter: ()=>{setDisplayed(true)}} 
+					: {}
+				)}/>
+    		
+    		<div className={`fade-element left gap-2 ${(displayed) ? 'fade-animation':''}`}>
+					<div className="flex column">
+						<span className="fake-title">{SITE_NAME}</span>
+	    			<h1 className="capitalize">{LABEL_SHORT}</h1>
+	    		</div>
 
-	      		<h1 className="mobile-title">{SITE_NAME}</h1>
-	      		<div className={`intro fade-element left ${(displayed) ? 'fade-animation':''}`}
-	      		>
-	      			<h1 className="mb-1 desktop-title">{SITE_NAME}</h1>
-		      		<p><b>Bienvenue sur {SITE_NAME}</b>, cet outil est un convertisseur de majuscules et de minuscules <b>– la casse –</b> du texte, et permet de remplacer plusieurs lettres par d'autres en un seul coup.</p>
-		      		<p>Remplacer en masse le texte souhaité grâce à la sélection multiple. La sélection sera bleue en <span className="normal">sélection normale</span> et ocre en <span className="multi">sélection multiple</span> !</p>
-		      	</div>
+      		<DescriptionText device="desktop" hidden={isMobile} />
+      	</div>
+
+      	<DescriptionText device="mobile" hidden={!isMobile} />
 			</div>
 		</header>
 	)

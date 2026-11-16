@@ -1,26 +1,26 @@
 // main
-import {ReactElement, useContext, useState, useEffect} from "react";
-import {EditorContext, MessageContext} from 'service/context';
-import {EditorState} from 'draft-js';
-import {isMobile} from 'react-device-detect';
+import {ReactElement, useContext, useState, useEffect} from "react"
+import {EditorContext, MessageContext} from 'service/context'
+import {isMobile} from 'react-device-detect'
+import {EditorState} from 'draft-js'
 // util
-import * as CustomMsg from 'constant/Messages';
-import {is_message, create_cause, create_error} from 'util/errorHandler';
-import {clipboardAction} from 'util/textHandler';
-import {Interaction} from 'constant/interfaces';
-import {Action, actionsData} from 'constant/Interactions';
+import {is_message, create_cause, create_error} from 'util/errorHandler'
+import {Action, actionsData} from 'constant/Interactions'
+import {clipboardAction} from 'util/textHandler'
+import {Interaction} from 'constant/interfaces'
+import * as CustomMsg from 'constant/Messages'
 // element
-import ActionButton from 'component/ActionButton';
-import TemplateButton from './TemplateButton';
+import ActionButton from 'component/ActionButton'
+import TemplateButton from './TemplateButton'
 
 const initialColor = '',
-	  location = 'C-ACTION';
+	  	location = 'C-ACTION'
 
 const ActionContainer = ({started}:{started:boolean}): ReactElement => {
   	// eslint-disable-next-line
 	const [editorState, setEditorState, editorRef] = useContext(EditorContext),
   		  [statutColor, setStatutColor] = useState<string>(initialColor),
-  		  [setAlertMessage] = useContext(MessageContext);
+  		  [setAlertMessage] = useContext(MessageContext)
 
 	/**
 	* Update the editor content
@@ -28,7 +28,7 @@ const ActionContainer = ({started}:{started:boolean}): ReactElement => {
 	const handleAction = async (action:string, entry:string):Promise<void> => {
 		try
 		{
-			// if (contentLength === 0) return;
+			// if (contentLength === 0) return
 			const newState = await clipboardAction(action, editorRef)
 
 			// getting new state failed
@@ -82,5 +82,5 @@ const ActionContainer = ({started}:{started:boolean}): ReactElement => {
 		</div>
 	)
 }
-// const ActionContainerMemo = memo(ActionContainer);
-export default ActionContainer;
+// const ActionContainerMemo = memo(ActionContainer)
+export default ActionContainer

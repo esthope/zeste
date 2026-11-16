@@ -43,7 +43,7 @@ const Template = ():ReactElement => {
       		))}
       	</div>
       	<span className="rozhaone-font">Copyright © {year} • Tous droits réservés</span>
-	    	{!isError && <img id="footer-bg" src={backgroundImage} alt="Arrière plan du site" />}
+	    	{!isError && <img id="footer-bg" src={backgroundImage} alt="" />}
       </footer>
 	</>
 	)

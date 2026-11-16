@@ -1,6 +1,8 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Template from 'component/Template';
 import HomeScreen from 'screen/HomeScreen';
+import NotFoundScreen from 'screen/NotFoundScreen';
+// import UnavailableScreen from 'screen/UnavailableScreen';
 
 function App() {
   return (
@@ -9,7 +11,7 @@ function App() {
         <Route path="/" element={<Template/>}>
           <Route index element={<HomeScreen/>} />
         </Route>
-        <Route path="/*" element={<Navigate to="/" />} />
+        <Route path="*" element={<NotFoundScreen/>} />
       </Routes>
     </Router>
   )

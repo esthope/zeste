@@ -38,8 +38,16 @@ main {
   }
 }
 
-p {margin: 0}
+h1 {
+  font-weight: normal;
+  line-height: normal;
+  font-size: 0.8em;
+  padding: 0.2em;
+  margin: 0;
+}
+
 button {cursor: pointer}
+p {margin: 0}
 
 /*---------phones--------------------------------------*/
 @media only screen and (min-width: 1px) {

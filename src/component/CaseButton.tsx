@@ -8,7 +8,7 @@ interface CaseProp {
 	className?:string
 }
 
-const CaseButton = ({content, onClick, onMouseEnter, disabled, className}:CaseProp): ReactElement => {
+const CaseButton = ({content, onClick, label, onMouseEnter, disabled, className}:CaseProp): ReactElement => {
 
 	let additionalStyle = className ?? 'green-background flex-center';
 
@@ -22,9 +22,9 @@ const CaseButton = ({content, onClick, onMouseEnter, disabled, className}:CasePr
 		<button
 			type="button"
 			className={`caseButtonBase caseButton mbe-06 ${additionalStyle}`}
-			{...properties}
-        	onMouseDown={(event) => event.preventDefault()}
-			> 
+			aria-label={`Changer la casse en ${label}`}
+      onMouseDown={(event) => event.preventDefault()}
+			{...properties} >
 
 			{(typeof content === 'function')
 				? content()

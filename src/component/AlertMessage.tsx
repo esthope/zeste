@@ -1,15 +1,16 @@
 // main
-import {ReactElement, useState, useEffect, useContext, useCallback, useRef} from 'react';
-import {isMobile} from 'react-device-detect';
+import {ReactElement, useState, useEffect, useContext, useCallback, useRef} from 'react'
+import {isMobile} from 'react-device-detect'
 // util
-import {MessageContext} from 'service/context';
-import {reset_alert, label_status, send_mail} from 'util/errorHandler';
-import error_icon from 'assets/error.svg';
-import warn_icon from 'assets/warn.svg';
-import close_icon from 'assets/close.svg';
+import {MessageContext} from 'service/context'
+import {reset_alert, label_status, send_mail} from 'util/errorHandler'
+import error_icon from 'assets/error.svg'
+import warn_icon from 'assets/warn.svg'
+import close_icon from 'assets/close.svg'
 // element
-import {REFRESH_PAGE} from 'constant/Messages';
-import {Message} from 'constant/interfaces';
+import {REFRESH_PAGE} from 'constant/Messages'
+import {Message} from 'constant/interfaces'
+import {LABEL} from 'constant/Configuration'
 
 const AlertMessage = ():ReactElement => {
 
@@ -18,10 +19,9 @@ const AlertMessage = ():ReactElement => {
 		[messageIcon, setMessageIcon] = useState<string>(error_icon),
 		[hidingDelay, setHidingDelay] = useState<number>(0),
 		[keep, setKeap] = useState<boolean>(false)
-		;
 
-	const {level, message, displayed, reset, cause} = alertMessage;
-	const intervaRef = useRef<any>(null);
+	const {level, message, displayed, reset, cause} = alertMessage
+	const intervaRef = useRef<any>(null)
 
 	/**
 	 * [CALL]
@@ -71,7 +71,7 @@ const AlertMessage = ():ReactElement => {
 
 		return () => {
 			clearInterval(intervaRef.current)
-			intervaRef.current = 0;
+			intervaRef.current = 0
 		}
 	// eslint-disable-next-line
 	}, [keep, displayed])
@@ -127,10 +127,9 @@ const AlertMessage = ():ReactElement => {
 		)}>
 			<div className={`gap-07 flex row fade-element right ${(displayed) ? 'fade-animation':''}`}>
 				<span className={`alert-level rozhaone-font ${level}-color`}>{label_status[level]}</span>
-
 			    <p>
 			    	{message}
-					{!!reset && <a href="/" className="block mt-08">{REFRESH_PAGE}</a>}
+						{!!reset && <a href="/" className="block mt-08">{REFRESH_PAGE}</a>}
 			    </p>
 			</div>
 
@@ -141,22 +140,19 @@ const AlertMessage = ():ReactElement => {
 				: {}
 			)}>
 		      	<img id="level-icon" src={messageIcon}
-		      	alt={`Logo ${level}. Montrer le message.`}
 		      	className={`grow-element ${(displayed) ? 'grow-animation' : ''}`}
-
+		      	alt=""
 		      	{...( isMobile
 					? { onClick: ()=> {if (displayed === false) change_displayed_state(true) }}
 					: {}
 				)}/>
 
-	          	<button
-				className={`no-border no-bg p-0 m-05 index-1 customButton flex-center`}
-				onClick={close_alert} >
-		      		<img src={close_icon} alt="Fermer le message" />
+        	<button className={`no-border no-bg p-0 m-05 index-1 customButton flex-center`} onClick={close_alert} aria-label="Fermer l'alerte">
+      			<img src={close_icon} alt="" />
 			    </button>
 			</div>
 		</section>
 	)
 }
 
-export default AlertMessage;
+export default AlertMessage

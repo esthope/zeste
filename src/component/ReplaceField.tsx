@@ -10,9 +10,9 @@ import CustomButton from 'component/CustomButton';
 import {SELECT_PLEASE, EMPTY_FIELD} from 'constant/Messages';
 
 const ReplaceField = (): ReactElement => {
-	const 	[choice, setChoice] = useState<string>(''),
+	const [choice, setChoice] = useState<string>(''),
 			[editorState, setEditorState] = useContext(EditorContext),
-        	[setAlertMessage] = useContext(MessageContext);
+      [setAlertMessage] = useContext(MessageContext);
 
 	/**
 	 * Replace the text from selected string
@@ -44,7 +44,8 @@ const ReplaceField = (): ReactElement => {
 	return (
 		<div id="replacing-field">
 			<div className="flex gap-1">
-	        	<input
+	      <input
+	      id="replaceField"
 				type="text" 
 				value={choice}
 				className="green-background quicksand-font block"
@@ -55,7 +56,7 @@ const ReplaceField = (): ReactElement => {
 			</div>
 
 			<span className="infos">Remplacement de la sélection</span>
-      	</div>
+    </div>
 	)
 }
 

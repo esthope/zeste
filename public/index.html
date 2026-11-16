@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr" xml:lang="fr" xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
-    <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#FEFEFE" />
+    <meta charset="utf-8" />
+    <base href="/" />
     <meta
       name="description"
       content="Remplacez les caractères d'un texte et convertissez les majuscules et les minuscules en masse avec la sélection multiple."
@@ -17,13 +17,13 @@
     <meta property="og:description" content="Modifiez simplement la casse du texte et faites des remplacements de caractères ciblés.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://zeste-convert.fr">
-    <meta property="og:image" content="/logo192.png">
+    <meta property="og:image" content="https://zeste-convert.fr/logo192.png">
 
     <!-- x -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Zeste – Convertisseur de texte">
     <meta name="twitter:description" content="Modifiez simplement la casse du texte et faites des remplacements de caractères ciblés.">
-    <meta name="twitter:image" content="/logo192.png">
+    <meta name="twitter:image" content="https://zeste-convert.fr/logo192.png">
 
     <!-- favicons -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
@@ -54,6 +54,47 @@
     </script>
   </head>
   <body class="m-0">
-    <div id="root" class="m-0 flex column"></div>    
+    <div id="root" class="m-0 flex column">
+      <header className="mb-5">
+        <div id="header-content" className="flex fit-content">
+          <img src="/src/assets/zeste.svg" className="ml-3 pointer" aria-label="convertisseur de casse, majuscule et minuscule, remplacement en masse de texte" />
+          <span className="fake-title desktop-title mb-1">Zeste</span>
+          <h1>Convertisseur de texte, de majuscule et de minuscule</h1>
+          <div className="intro fade-element left">
+            <p><b>Bienvenue sur Zeste</b>, cet outil est un convertisseur de texte gratuit, de majuscule et de minuscule <b>– la casse –</b>, et permet de remplacer plusieurs lettres par d'autres en un seul coup. <br/> Remplacer en masse le texte souhaité grâce à la sélection multiple. !</p>
+          </div>
+        </div>
+      </header>
+
+      <main className="flex column">
+        <noscript>
+          <p><u>JavaScript est désactivé. Activez-le pour utiliser toutes les fonctionnalités du convertisseur Zeste</u>.</p>
+        </noscript>
+
+        <h2>Un convertisseur de casse simple et efficace</h2>
+        <p>
+          Transformez rapidement votre texte en majuscules,
+          minuscules ou autres formats de casse.
+        </p>
+
+        <h2>Remplacement de caractères</h2>
+        <p>
+          Remplacez plusieurs caractères ou groupes de caractères
+          en une seule opération.
+        </p>
+      </main>
+
+      <footer className="self-end flex-end column gap-3">
+        <div className="link flex-center column gap-05">
+          <span>Les autres travaux du créateur</span> 
+          <a href="https://github.com/esthope" target="_blank" rel="noreferrer" className="rozhaone-font" alt="Voir les autres travaux du créateur sur Github">Github</a>
+        </div>
+        <div className="link flex-center column gap-05">
+          <span>Contactez moi directement</span> 
+          <a href="https://www.linkedin.com/in/luciledemongeot" target="_blank" rel="noreferrer" className="rozhaone-font" alt="Contactez moi directement sur LinkedIn">LinkedIn</a>
+        </div>
+        <span className="rozhaone-font">Copyright © 2026 • Tous droits réservés</span>
+      </footer>
+    </div>
   </body>
 </html>

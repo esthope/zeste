@@ -49,6 +49,7 @@ const ActionButton = ({entry, label, onMouseEnter, statut, onClick}:ActionProp):
 	return (
 		<button
 			type="button"
+			aria-label={`Gérer le texte : ${label}`}
 			className={`${statut?.includes(entry) ? statut.split(' ').pop() : ''} actionButton mbe-06 flex-center column no-bg no-border`}
 			{...buttonProp}
 		>
@@ -57,7 +58,7 @@ const ActionButton = ({entry, label, onMouseEnter, statut, onClick}:ActionProp):
 				fill={(entry === 'reset' || entry === 'copy') ? 'currentColor' : 'transparent'}
 				{...imageProp}
 				/>
-	    </button>
+	  </button>
 	)
 }
 
