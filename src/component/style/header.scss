@@ -1,5 +1,7 @@
 @use 'constant/base.scss' as cst;
 
+header.noscript {margin: 3em}
+
 #header-content {
 	row-gap: 2rem;
 	align-items: center;
